@@ -1,0 +1,68 @@
+/* Agregá esto a tu CSS global */
+.gradient-bubble {
+  background-image: linear-gradient(135deg, #3b82f6, #f59e0b);
+}
+
+.gradient-bubble-soft {
+  background-image: linear-gradient(135deg, #60a5fa, #fbbf24);
+}
+
+.gradient-text {
+  background-image: linear-gradient(90deg, #2563eb, #f59e0b);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Backdrop Bootstrap-like */
+.offcanvas-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, .5);
+  z-index: 1049;
+}
+
+.offcanvas-backdrop.fade {
+  opacity: 0;
+  transition: opacity .15s linear;
+}
+
+.offcanvas-backdrop.show {
+  opacity: 1;
+}
+
+/* Panel deslizante */
+.slide-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: 280px;
+  /* podés subirlo a 320 si querés */
+  background: #fff;
+  border-left: 1px solid rgba(0, 0, 0, .1);
+  box-shadow: 0 0 1rem rgba(0, 0, 0, .15);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  /* oculto a la derecha */
+  transition: transform .25s ease, opacity .2s ease;
+  opacity: 0;
+  z-index: 1050;
+}
+
+.slide-panel.show {
+  transform: translateX(0);
+  /* entra desde la derecha */
+  opacity: 1;
+}
+
+/* En tu archivo CSS principal */
+.hover-bg:hover {
+  background-color: #f8f9fa !important;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
