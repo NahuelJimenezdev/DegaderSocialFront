@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Docs privados
+/BACKEND_IMAGENES.md
+/SOLUCION_CARGA_IMAGENES.md
