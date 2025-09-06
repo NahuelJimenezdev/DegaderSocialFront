@@ -350,7 +350,7 @@ npm run preview
 
 Proyecto **privado** de la Fundación Humanitaria Sol & Luna.
 
-> Define aquí la licencia elegida (p. ej. “Todos los derechos reservados” o “MIT”) según la decisión institucional.
+> **Licencia:** Todos los derechos reservados © 2025 Degader Social. Uso interno. Prohibida su reproducción, distribución o modificación sin autorización expresa por escrito.
 
 ---
 
