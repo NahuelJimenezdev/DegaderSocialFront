@@ -372,6 +372,3 @@ Proyecto **privado** de la Fundación Humanitaria Sol & Luna.
 **Soporte técnico (email):** [naedjima93@gmail.com](mailto:naedjima93@gmail.com)  
 **WhatsApp:** [Escribime por WhatsApp](https://wa.me/5491166582695?text=Hola%20Nahuel%2C%20tengo%20una%20consulta%20sobre%20Degader%20Social.)
 
-
-
-> Si necesitas que este README incluya capturas, diagramas o ejemplos de llamadas a la API con datos reales, dímelo y los agrego.
