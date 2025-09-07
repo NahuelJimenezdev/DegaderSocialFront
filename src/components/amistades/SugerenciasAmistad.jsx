@@ -10,7 +10,7 @@ const SugerenciasAmistad = () => {
   const cargarSugerencias = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:3001/api/amistades/sugerencias', {
+      const response = await fetch('http://localhost:3001/api/amigos/sugerencias', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -31,12 +31,13 @@ const SugerenciasAmistad = () => {
     setEnviandoSolicitud(usuarioId);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:3001/api/amistades/solicitud/${usuarioId}`, {
+      const response = await fetch(`http://localhost:3001/api/amigos/solicitar`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify({ receptorId: usuarioId })
       });
 
       const data = await response.json();

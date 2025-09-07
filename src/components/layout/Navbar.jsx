@@ -46,13 +46,8 @@ export function Navbar() {
               <Calendar size={20} className="text-secondary" />
             </button>
 
-            {/* <NotificacionesBell /> */}
-            <div className="position-relative">
-              <button className="btn btn-light p-2 rounded-circle position-relative">
-                <Bell size={20} className="text-secondary" />
-                <span className="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
-              </button>
-            </div>
+            {/* Componente de notificaciones mejorado */}
+            <NotificacionesBell />
 
             {/* User menu */}
             <UserMenu

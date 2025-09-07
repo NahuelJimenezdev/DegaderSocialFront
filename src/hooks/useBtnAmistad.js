@@ -1,8 +1,9 @@
 // src/hooks/useFriendship.js
 import { useState, useEffect, useCallback } from 'react';
+import { API_CONFIG } from '../lib/config';
 
 // API base URL - ajusta según tu configuración
-const API_BASE = '/api/amigos';
+const API_BASE = `${API_CONFIG.BASE_URL}/api/amigos`;
 
 const useBtnAmistad = (userId) => {
   const [estado, setEstado] = useState('ninguna');

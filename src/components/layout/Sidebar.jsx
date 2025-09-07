@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { Home, User as UserIcon, Users, MessageCircle, Calendar, Folder, Settings, MapPin } from "lucide-react";
+import { Home, User as UserIcon, Users, MessageCircle, Calendar, Folder, Settings, MapPin, UserPlus } from "lucide-react";
 import { useProfile } from "../../context/ProfileContext";
 
 function Sidebar() {
@@ -13,6 +13,7 @@ function Sidebar() {
   const menuItems = [
     { id: "feed", label: "Inicio", icon: Home },
     { id: "friends", label: "Amigos", icon: Users },
+    { id: "solicitudes", label: "Solicitudes", icon: UserPlus },
     { id: "groups", label: "Grupos e Iglesias", icon: MapPin },
     { id: "meetings", label: "Reuniones", icon: Calendar },
     { id: "files", label: "Mis Carpetas", icon: Folder },
@@ -81,8 +82,8 @@ function Sidebar() {
                 type="button"
                 onClick={() => navigate(`/${id}`)}
                 className={`btn d-flex align-items-center gap-3 px-3 py-2 rounded-3 text-start ${isActive
-                    ? "btn-light border border-primary-subtle text-primary active"
-                    : "btn-white text-body-secondary"
+                  ? "btn-light border border-primary-subtle text-primary active"
+                  : "btn-white text-body-secondary"
                   }`}
               >
                 <Icon size={20} className={isActive ? "text-primary" : "text-secondary"} />
@@ -101,8 +102,8 @@ function Sidebar() {
                 type="button"
                 onClick={() => navigate("/admin")}
                 className={`btn d-flex align-items-center gap-3 px-3 py-2 rounded-3 text-start ${(location.pathname.split("/")[1] || "") === "admin"
-                    ? "btn-light border border-warning-subtle text-warning"
-                    : "btn-white text-body-secondary"
+                  ? "btn-light border border-warning-subtle text-warning"
+                  : "btn-white text-body-secondary"
                   }`}
               >
                 <Settings size={20}

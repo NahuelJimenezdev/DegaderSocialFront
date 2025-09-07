@@ -1,8 +1,9 @@
 // App.jsx
 import { BrowserRouter, Routes, Route, Outlet, Navigate } from "react-router-dom";
 import { Navbar } from "./components/layout/Navbar";
+import "./App.css";
 
-import Login  from "./auth/Login";
+import Login from "./auth/Login";
 import Sidebar from "./components/layout/Sidebar";
 import Home from "./pages/Home";
 import PerfilUser from "./pages/PerfilUser";
@@ -14,6 +15,7 @@ import CarpetasUser from "./pages/CarpetasUser";
 import AdminDashboard from "./pages/AdminDashboard";
 import Busqueda from "./pages/Busqueda";
 import PerfilVisitante from "./pages/PerfilVisitante";
+import SolicitudesPendientes from "./components/solicitudesPendientes/SolicitudesPendientes";
 
 function MainLayout() {
   return (
@@ -31,22 +33,23 @@ function MainLayout() {
 
 function App() {
   return (
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route element={<MainLayout />}>
-          <Route index element={<Navigate to="/feed" replace />} />
-          <Route path="/feed" element={<Home />} />
-          <Route path="/friends" element={<AmigosUser />} />
-          <Route path="/groups" element={<GruposUser />} />
-          <Route path="/meetings" element={<Reuniones />} />
-          <Route path="/messages" element={<Mensajes />} />
-          <Route path="/perfilUser" element={<PerfilUser />} />
-          <Route path="/files" element={<CarpetasUser />} />            
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/busqueda" element={<Busqueda />} />
-          <Route path="/perfil/:id" element={<PerfilVisitante />} />
-        </Route>
-      </Routes>
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route element={<MainLayout />}>
+        <Route index element={<Navigate to="/feed" replace />} />
+        <Route path="/feed" element={<Home />} />
+        <Route path="/busqueda" element={<Busqueda />} />
+        <Route path="/groups" element={<GruposUser />} />
+        <Route path="/messages" element={<Mensajes />} />
+        <Route path="/files" element={<CarpetasUser />} />
+        <Route path="/friends" element={<AmigosUser />} />
+        <Route path="/meetings" element={<Reuniones />} />
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/perfilUser" element={<PerfilUser />} />
+        <Route path="/perfil/:id" element={<PerfilVisitante />} />
+        <Route path="/solicitudes" element={<SolicitudesPendientes />} />
+      </Route>
+    </Routes>
   );
 }
 

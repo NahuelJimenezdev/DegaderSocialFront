@@ -1,0 +1,150 @@
+/* Estilos para el sistema de notificaciones */
+.notification-dropdown {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.notification-item {
+  transition: background-color 0.2s ease;
+}
+
+.notification-item:hover {
+  background-color: #f8f9fa !important;
+}
+
+.notification-unread {
+  background-color: #e3f2fd;
+  border-left: 3px solid #2196f3;
+}
+
+.pulse-animation {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(33, 150, 243, 0.7);
+  }
+
+  70% {
+    box-shadow: 0 0 0 10px rgba(33, 150, 243, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(33, 150, 243, 0);
+  }
+}
+
+.hover-bg-light:hover {
+  background-color: #f8f9fa !important;
+  transition: background-color 0.2s ease;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+/* Estilos para badges de notificaciones */
+.notification-badge {
+  font-size: 10px;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+}
+
+/* Estilos para botones de solicitud de amistad */
+.friend-request-buttons .btn {
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.friend-request-buttons .btn:hover {
+  transform: translateY(-1px);
+}
+
+/* Estilos para el modal de notificaciones */
+.modal-notifications {
+  backdrop-filter: blur(4px);
+}
+
+.modal-notifications .modal-content {
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilos responsive */
+@media (max-width: 768px) {
+  .notification-dropdown {
+    width: 95vw !important;
+    right: 2.5vw !important;
+    left: auto !important;
+  }
+
+  .modal-lg {
+    max-width: 95%;
+  }
+}
+
+/* Scrollbar personalizada */
+.notification-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.notification-scroll::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.notification-scroll::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.notification-scroll::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Animación para nuevas notificaciones */
+@keyframes slideInDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.notification-new {
+  animation: slideInDown 0.3s ease-out;
+}
+
+/* Estilos para iconos de estado */
+.status-icon {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  border: 2px solid white;
+}
+
+.status-online {
+  background-color: #4caf50;
+}
+
+.status-away {
+  background-color: #ff9800;
+}
+
+.status-offline {
+  background-color: #9e9e9e;
+}
