@@ -5,6 +5,7 @@ import "./App.css";
 
 import Login from "./auth/Login";
 import Sidebar from "./components/layout/Sidebar";
+import MobileBottomNav from "./components/layout/MobileBottomNav";
 import Home from "./pages/Home";
 import PerfilUser from "./pages/PerfilUser";
 import AmigosUser from "./pages/AmigosUser";
@@ -21,15 +22,27 @@ import PruebaContactos from "./components/debug/PruebaContactos";
 
 function MainLayout() {
   return (
-    <>
+    <div className="d-flex flex-column min-vh-100">
       <Navbar />
-      <div className="d-flex">
-        <Sidebar />
-        <main className="flex-grow-1 p-3">
-          <Outlet />
+      <div className="d-flex flex-grow-1">
+        {/* Sidebar - Solo visible en desktop */}
+        <div className="d-none d-lg-block">
+          <Sidebar />
+        </div>
+
+        {/* Contenido principal */}
+        <main className="flex-grow-1 p-2 p-md-3" style={{ paddingBottom: '80px' }}>
+          <div className="container-fluid">
+            <Outlet />
+          </div>
         </main>
       </div>
-    </>
+
+      {/* Navegación inferior - Solo visible en móvil */}
+      <div className="d-lg-none">
+        <MobileBottomNav />
+      </div>
+    </div>
   );
 }
 

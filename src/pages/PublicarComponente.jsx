@@ -214,13 +214,13 @@ const PublicarComponente = ({ usuario, onPublicar, onEventoCreado }) => {
 
   return (
     <div className="card shadow-sm border-0 mb-4">
-      <div className="card-body">
-        <div className="d-flex gap-3">
+      <div className="card-body p-2 p-md-3">
+        <div className="d-flex gap-2 gap-md-3">
           {/* Foto de perfil */}
           <div className="flex-shrink-0">
             <div
               className="rounded-circle overflow-hidden"
-              style={{ width: 50, height: 50 }}
+              style={{ width: 40, height: 40 }}
             >
               {usuario.fotoPerfil ? (
                 <img
@@ -235,7 +235,7 @@ const PublicarComponente = ({ usuario, onPublicar, onEventoCreado }) => {
               ) : null}
               <div
                 className="w-100 h-100 d-flex align-items-center justify-content-center bg-primary text-white"
-                style={{ display: usuario.fotoPerfil ? 'none' : 'flex' }}
+                style={{ display: usuario.fotoPerfil ? 'none' : 'flex', fontSize: '14px' }}
               >
                 <span className="fw-bold">
                   {usuario.primernombreUsuario?.[0]?.toUpperCase()}
@@ -246,9 +246,9 @@ const PublicarComponente = ({ usuario, onPublicar, onEventoCreado }) => {
           </div>
 
           {/* Contenido de la publicación */}
-          <div className="flex-grow-1">
+          <div className="flex-grow-1 min-width-0">
             {/* Selector de tipo de publicación */}
-            <div className="mb-3">
+            <div className="mb-2 mb-md-3">
               <select
                 className="form-select form-select-sm"
                 value={tipoPublicacion}
@@ -258,7 +258,7 @@ const PublicarComponente = ({ usuario, onPublicar, onEventoCreado }) => {
                 <option value="publicacion">📝 Publicación Normal</option>
                 <option value="evento">📅 Evento Simple</option>
               </select>
-              <small className="text-muted d-block mt-1">
+              <small className="text-muted d-block mt-1 d-none d-md-block">
                 {tipoPublicacion === 'publicacion'
                   ? 'Comparte pensamientos, fotos y videos'
                   : 'Evento básico con título y descripción'
@@ -268,10 +268,10 @@ const PublicarComponente = ({ usuario, onPublicar, onEventoCreado }) => {
 
             {/* Título para eventos */}
             {tipoPublicacion === 'evento' && (
-              <div className="mb-3">
+              <div className="mb-2 mb-md-3">
                 <input
                   type="text"
-                  className="form-control"
+                  className="form-control form-control-sm"
                   placeholder="Título del evento"
                   value={titulo}
                   onChange={(e) => setTitulo(e.target.value)}
@@ -282,18 +282,19 @@ const PublicarComponente = ({ usuario, onPublicar, onEventoCreado }) => {
             {/* Área de texto */}
             <textarea
               ref={contenidoInputRef}
-              className="form-control mb-3"
+              className="form-control mb-2 mb-md-3"
               placeholder={`¿Qué estás pensando, ${usuario.primernombreUsuario}?`}
               value={contenido}
               onChange={(e) => setContenido(e.target.value)}
-              rows="3"
+              rows="2"
+              style={{ minHeight: '60px' }}
             />
 
             {/* Previews de imágenes */}
             {imagenes.length > 0 && (
-              <div className="d-flex flex-wrap gap-2 mb-3">
+              <div className="d-flex flex-wrap gap-1 gap-md-2 mb-2 mb-md-3">
                 {imagenes.map((imagen, index) => (
-                  <div key={index} className="position-relative" style={{ width: 100, height: 100 }}>
+                  <div key={index} className="position-relative" style={{ width: 80, height: 80 }}>
                     <img
                       src={imagen.preview}
                       alt={`Preview ${index}`}
@@ -311,9 +312,9 @@ const PublicarComponente = ({ usuario, onPublicar, onEventoCreado }) => {
 
             {/* Previews de videos */}
             {videos.length > 0 && (
-              <div className="d-flex flex-wrap gap-2 mb-3">
+              <div className="d-flex flex-wrap gap-1 gap-md-2 mb-2 mb-md-3">
                 {videos.map((video, index) => (
-                  <div key={index} className="position-relative" style={{ width: 100, height: 100 }}>
+                  <div key={index} className="position-relative" style={{ width: 80, height: 80 }}>
                     <video
                       src={video.preview}
                       className="img-fluid rounded h-100 w-100 object-fit-cover"
@@ -330,14 +331,14 @@ const PublicarComponente = ({ usuario, onPublicar, onEventoCreado }) => {
 
             {/* Mensaje de error */}
             {error && (
-              <div className="alert alert-danger py-2 mb-3" role="alert">
-                {error}
+              <div className="alert alert-danger py-1 py-md-2 mb-2 mb-md-3" role="alert">
+                <small>{error}</small>
               </div>
             )}
 
             {/* Botones de acción */}
-            <div className="d-flex justify-content-between align-items-center">
-              <div className="d-flex gap-2">
+            <div className="d-flex justify-content-between align-items-center flex-wrap gap-2">
+              <div className="d-flex gap-1 gap-md-2 flex-wrap">
                 {/* Input oculto para imágenes */}
                 <input
                   type="file"
@@ -366,7 +367,7 @@ const PublicarComponente = ({ usuario, onPublicar, onEventoCreado }) => {
                   disabled={subiendo}
                 >
                   <Image size={16} />
-                  <span>Foto</span>
+                  <span className="d-none d-sm-inline">Foto</span>
                 </button>
 
                 {/* Botón para subir video */}
@@ -377,7 +378,7 @@ const PublicarComponente = ({ usuario, onPublicar, onEventoCreado }) => {
                   disabled={subiendo}
                 >
                   <Video size={16} />
-                  <span>Video</span>
+                  <span className="d-none d-sm-inline">Video</span>
                 </button>
 
                 {/* Selector de emojis */}
@@ -389,7 +390,7 @@ const PublicarComponente = ({ usuario, onPublicar, onEventoCreado }) => {
                 {/* Botón para crear evento completo */}
                 <button
                   type="button"
-                  className="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1"
+                  className="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1 d-none d-md-flex"
                   onClick={() => setMostrarModalEvento(true)}
                   disabled={subiendo}
                   title="Crear evento profesional con fechas, ubicación, asistentes y más opciones"
@@ -401,7 +402,7 @@ const PublicarComponente = ({ usuario, onPublicar, onEventoCreado }) => {
 
               {/* Botón de publicar */}
               <button
-                className="btn btn-primary d-flex align-items-center gap-1"
+                className="btn btn-primary btn-sm d-flex align-items-center gap-1"
                 onClick={handlePublicar}
                 disabled={subiendo || (!contenido.trim() && imagenes.length === 0 && videos.length === 0)}
               >
@@ -410,12 +411,12 @@ const PublicarComponente = ({ usuario, onPublicar, onEventoCreado }) => {
                     <div className="spinner-border spinner-border-sm" role="status">
                       <span className="visually-hidden">Publicando...</span>
                     </div>
-                    <span>Publicando...</span>
+                    <span className="d-none d-sm-inline">Publicando...</span>
                   </>
                 ) : (
                   <>
                     <Send size={16} />
-                    <span>Publicar</span>
+                    <span className="d-none d-sm-inline">Publicar</span>
                   </>
                 )}
               </button>

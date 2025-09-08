@@ -20,6 +20,9 @@ function EditContact({ initial, version, onSaved }) {
   });
 
   const onSubmit = async (values) => {
+    console.log('🔄 [EditContact] Enviando datos:', values);
+    console.log('🔢 [EditContact] Versión actual:', version);
+
     // trim de strings para guardar limpio
     const cleaned = Object.fromEntries(
       Object.entries(values).map(([k, v]) =>
@@ -28,19 +31,28 @@ function EditContact({ initial, version, onSaved }) {
     );
 
     const body = { ...cleaned, version };
-    const { data } = await apiFetch("http://localhost:3001/api/me", {
-      method: "PATCH",
-      body: JSON.stringify(body),
-    });
+    console.log('📦 [EditContact] Body a enviar:', body);
 
-    // resetea el formulario con los valores guardados para limpiar "dirty"
-    reset({
-      ciudadUsuario: data.usuario.ciudadUsuario || "",
-      paisUsuario: data.usuario.paisUsuario || "",
-      direccionUsuario: data.usuario.direccionUsuario || "",
-    });
+    try {
+      const { data } = await apiFetch("http://localhost:3001/api/me", {
+        method: "PATCH",
+        body: JSON.stringify(body),
+      });
 
-    onSaved?.(data.usuario);
+      console.log('✅ [EditContact] Respuesta exitosa:', data);
+
+      // resetea el formulario con los valores guardados para limpiar "dirty"
+      reset({
+        ciudadUsuario: data.usuario.ciudadUsuario || "",
+        paisUsuario: data.usuario.paisUsuario || "",
+        direccionUsuario: data.usuario.direccionUsuario || "",
+      });
+
+      onSaved?.(data.usuario);
+    } catch (error) {
+      console.error('❌ [EditContact] Error:', error);
+      throw error; // Re-lanzar para que se maneje en el UI
+    }
   };
 
   return (

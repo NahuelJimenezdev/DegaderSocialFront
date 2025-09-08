@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { EditBasicInfo } from "./EditBasicInfo";
 import EditContact from "./EditContact";
-import { EditAvatar } from "./EditAvatar";
 import { EditBio } from "./EditBio";
 import { EditPrivacy } from "./EditPrivacy";
 // (Puedes agregar aquí los otros: EditContact, EditBio, EditAvatar, EditPrivacy)
@@ -62,17 +61,17 @@ export function EditProfileModal({ open, onClose, user, onUserUpdate }) {
                   version={user.version}
                   onSaved={onUserUpdate}
                 />)}
-              {tab === "Perfil" && (<EditAvatar
-                currentAvatar={user.fotoPerfil}   // opcional, para mostrar el actual
-                onSaved={onUserUpdate}
-                onUserUpdate={onUserUpdate}
-              />)}
+              {tab === "Perfil" && (
+                <div>
+                  <p>Funcionalidad de perfil movida a la pestaña principal.</p>
+                </div>
+              )}
               {tab === "Privacidad" && (
                 <EditPrivacy
                   initial={{ preferencias: user.preferencias }}
                   version={user.version}
                   onSaved={onUserUpdate}
-              />)}
+                />)}
 
             </div>
           </div>

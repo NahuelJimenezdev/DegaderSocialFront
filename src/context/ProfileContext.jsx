@@ -24,26 +24,54 @@ function ProfileProvider({ children }) {
       setError(null);
 
       const token = localStorage.getItem("token");
+      console.log('🔑 Token encontrado:', token ? 'SÍ' : 'NO');
+
       if (!token) {
+        console.log('❌ No hay token, redirigiendo a login');
         setLoading(false);
-        navigate('/login'); // ✅ Redirigir a login si no hay token
+        navigate('/login');
         return;
       }
 
+      console.log('📡 Haciendo petición a:', 'http://localhost:3001/api/me');
+      console.log('🔒 Con token:', token.substring(0, 20) + '...');
+
       const response = await fetch('http://localhost:3001/api/me', {
-        headers: { Authorization: `Bearer ${token}` }
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
       });
+
+      console.log('📊 Response status:', response.status);
+      console.log('📊 Response ok:', response.ok);
 
       if (response.ok) {
         const data = await response.json();
+        console.log('✅ Datos recibidos:', data);
         setProfile(data.usuario || data);
       } else {
-        throw new Error('Error al cargar el perfil');
+        const errorData = await response.text();
+        console.error('❌ Error del servidor:', response.status, errorData);
+
+        if (response.status === 401) {
+          console.log('🔒 Token inválido, limpiando y redirigiendo');
+          localStorage.removeItem("token");
+          navigate('/login');
+          return;
+        }
+
+        throw new Error(`Error ${response.status}: ${errorData}`);
       }
     } catch (error) {
-      console.error('Error loading profile:', error);
+      console.error('❌ Error en loadProfile:', error);
       setError(error.message);
-      navigate('/login'); // ✅ Redirigir a login en caso de error
+
+      // Solo redirigir si es un error de autenticación
+      if (error.message.includes('401') || error.message.includes('Token')) {
+        navigate('/login');
+      }
     } finally {
       setLoading(false);
     }

@@ -8,6 +8,7 @@ export const API_CONFIG = {
     LOGIN: "/api/usuariosInicios/login",
     ME: "/api/me",
     AVATAR: "/api/me/avatar",
+    BANNER: "/api/me/banner",
     USER: "/api/usuariosInicios/",
   },
 

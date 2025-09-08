@@ -34,17 +34,22 @@ function Sidebar() {
   return (
     <aside
       className="bg-white border-end position-sticky overflow-auto"
-      style={{ width: 350, height: "calc(100vh - 64px)", top: 64 }}
+      style={{
+        width: '280px',
+        minWidth: '280px',
+        height: "calc(100vh - 64px)",
+        top: 64
+      }}
     >
-      <div className="p-4">
+      <div className="p-3">
         {/* User Info Card */}
         <div
-          className="rounded-4 p-4 mb-4 border"
+          className="rounded-4 p-3 mb-3 border"
           style={{ background: "linear-gradient(135deg,#eff6ff,#fffbeb)", borderColor: "rgba(59,130,246,.25)" }}
         >
           <div className="d-flex align-items-center gap-3">
             <div
-              className="rounded-circle d-flex align-items-center justify-content-center overflow-hidden"
+              className="rounded-circle d-flex align-items-center justify-content-center overflow-hidden flex-shrink-0"
               style={{ width: 48, height: 48, background: "linear-gradient(135deg,#60a5fa,#fbbf24)" }}
             >
               {profile?.fotoPerfil ? (
@@ -57,14 +62,11 @@ function Sidebar() {
                 <UserIcon size={24} className="text-white" />
               )}
             </div>
-            <div>
-              <h3 className="fw-semibold text-dark mb-0" style={{ fontSize: 16 }}>
+            <div className="flex-grow-1 min-w-0">
+              <h3 className="fw-semibold text-dark mb-0 text-truncate" style={{ fontSize: 16 }}>
                 {loadingUser ? "Cargando..." : `${nombre} ${apellido}`.trim() || "Invitado"}
               </h3>
-              {/* <div className="text-secondary text-capitalize small">
-                {loadingUser ? "" : cargo || "Sin cargo"}
-              </div> */}
-              <div className="small text-primary text-capitalize">
+              <div className="small text-primary text-capitalize text-truncate">
                 {loadingUser ? "" : rol || "Usuario"}
               </div>
               {error && <div className="mt-1 text-danger" style={{ fontSize: 12 }}>{error}</div>}
@@ -73,7 +75,7 @@ function Sidebar() {
         </div>
 
         {/* Main Navigation */}
-        <nav className="d-grid gap-2">
+        <nav className="d-grid gap-1">
           {menuItems.map(({ id, label, icon: Icon }) => {
             const isActive = current === id;
             return (
@@ -85,9 +87,10 @@ function Sidebar() {
                   ? "btn-light border border-primary-subtle text-primary active"
                   : "btn-white text-body-secondary"
                   }`}
+                style={{ fontSize: '14px' }}
               >
-                <Icon size={20} className={isActive ? "text-primary" : "text-secondary"} />
-                <span className="fw-medium">{label}</span>
+                <Icon size={18} className={isActive ? "text-primary" : "text-secondary"} />
+                <span className="fw-medium text-truncate">{label}</span>
               </button>
             );
           })}
