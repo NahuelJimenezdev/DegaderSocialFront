@@ -10,7 +10,7 @@ import {
   ArrowLeft,
   MessageCircle
 } from "lucide-react";
-import BtnAmistad from "../components/btnAmistad/BtnAmistad";// Ajusta la ruta según tu estructura
+import BotonAmistad from "../components/common/BotonAmistad";// Usar el componente que se sincroniza
 
 function PerfilVisitante() {
   const { id } = useParams();
@@ -61,6 +61,22 @@ function PerfilVisitante() {
 
   const handleSendMessage = () => {
     navigate(`/mensajes/${id}`);
+  };
+
+  // Verificar si el usuario está viendo su propio perfil
+  const isOwnProfile = () => {
+    const token = localStorage.getItem('token');
+    if (!token) return false;
+
+    try {
+      // Decodificar token para obtener userId (simplificado)
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const currentUserId = payload.idUsuario || payload.id || payload._id || payload.userId;
+      return currentUserId === id;
+    } catch (error) {
+      console.error('Error verificando usuario propio:', error);
+      return false;
+    }
   };
 
   if (loading) {
@@ -197,19 +213,33 @@ function PerfilVisitante() {
                 </div>
 
                 <div className="d-flex gap-2">
-                  {/* REEMPLAZAR: Botón estático por FriendshipButton dinámico */}
-                  <BtnAmistad
-                    userId={id}
-                    className="btn-custom-friendship"
-                  />
+                  {/* Solo mostrar botones de amistad y mensaje si NO es el perfil propio */}
+                  {!isOwnProfile() && (
+                    <>
+                      <BotonAmistad
+                        usuarioId={id}
+                        className="btn-custom-friendship"
+                      />
 
-                  <button
-                    className="btn btn-outline-primary d-flex align-items-center gap-2"
-                    onClick={handleSendMessage}
-                  >
-                    <MessageCircle size={16} />
-                    <span>Mensaje</span>
-                  </button>
+                      <button
+                        className="btn btn-outline-primary d-flex align-items-center gap-2"
+                        onClick={handleSendMessage}
+                      >
+                        <MessageCircle size={16} />
+                        <span>Mensaje</span>
+                      </button>
+                    </>
+                  )}
+
+                  {/* Si es el perfil propio, mostrar botón de editar */}
+                  {isOwnProfile() && (
+                    <button
+                      className="btn btn-primary d-flex align-items-center gap-2"
+                      onClick={() => navigate('/perfil/editar')}
+                    >
+                      <span>Editar Perfil</span>
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

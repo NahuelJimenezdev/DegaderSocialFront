@@ -172,14 +172,14 @@ const NotificacionesBell = () => {
 
       // 1. Evento de solicitud respondida
       emitSolicitudRespondida({
-        usuarioId: remitenteId,
+        usuarioId: remitenteIdFinal,
         notificacionId: notificacionId,
         accion: accion
       });
 
       // 2. Evento de amistad actualizada
       emitAmistadActualizada({
-        usuarioId: remitenteId,
+        usuarioId: remitenteIdFinal,
         estado: accion === 'aceptar' ? 'amigos' : 'rechazada'
       });
 
@@ -188,7 +188,10 @@ const NotificacionesBell = () => {
         notificacionId: notificacionId
       });
 
-      console.log(`✅ Solicitud ${accion}ada y eventos emitidos para usuario ${remitenteId}`);
+      console.log(`✅ Solicitud ${accion}ada y eventos emitidos para usuario ${remitenteIdFinal}`);
+
+      // Recargar contador de notificaciones después de responder
+      await cargarContador();
 
     } catch (error) {
       console.error(`Error ${accion} solicitud:`, error);

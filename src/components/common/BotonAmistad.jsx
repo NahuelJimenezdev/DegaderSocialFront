@@ -25,6 +25,7 @@ const BotonAmistad = ({
     aceptarSolicitud,
     rechazarSolicitud,
     eliminarAmigo,
+    recargar,
     esAmigo,
     tieneSolicitudEnviada,
     tieneSolicitudRecibida,
@@ -53,17 +54,20 @@ const BotonAmistad = ({
 
   const baseClasses = `${variantClasses[variant]} ${sizeClasses[size]} ${className}`;
 
+  // Debug: Log del estado actual
+  console.log(`🔍 BotonAmistad - Usuario: ${usuarioId}, Estado: ${estado}, Cargando: ${cargando}, Error: ${error}`);
+
   // Renderizar según el estado
   const renderBoton = () => {
     if (error) {
       return (
         <button
           className={`${baseClasses} btn-error`}
-          onClick={() => window.location.reload()}
-          title="Error - Haz clic para recargar"
+          onClick={recargar}
+          title="Error - Haz clic para recargar estado"
         >
           <UserX size={iconSizes[size]} />
-          {mostrarTexto && <span>Error</span>}
+          {mostrarTexto && <span>Recargar</span>}
         </button>
       );
     }

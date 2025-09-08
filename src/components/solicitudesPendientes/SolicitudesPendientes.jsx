@@ -20,11 +20,12 @@ const SolicitudesPendientes = () => {
   useEffect(() => {
     // Escuchar eventos de solicitudes respondidas
     const unsubscribeSolicitud = onSolicitudRespondida((eventData) => {
-      console.log('📨 Evento recibido - Solicitud respondida:', eventData);
+      console.log('📨 Evento recibido en SolicitudesPendientes - Solicitud respondida:', eventData);
 
       // Actualizar el estado de la solicitud en la lista
       setSolicitudes(prev => prev.map(solicitud => {
         if (solicitud.remitenteId === eventData.usuarioId) {
+          console.log(`🔄 Actualizando solicitud de ${eventData.usuarioId} a estado: ${eventData.accion === 'aceptar' ? 'aceptada' : 'rechazada'}`);
           return {
             ...solicitud,
             estado: eventData.accion === 'aceptar' ? 'aceptada' : 'rechazada',
@@ -37,11 +38,12 @@ const SolicitudesPendientes = () => {
 
     // Escuchar eventos de amistad actualizada
     const unsubscribeAmistad = onAmistadActualizada((eventData) => {
-      console.log('👥 Evento recibido - Amistad actualizada:', eventData);
+      console.log('👥 Evento recibido en SolicitudesPendientes - Amistad actualizada:', eventData);
 
       // Actualizar el estado según el nuevo estado de amistad
       setSolicitudes(prev => prev.map(solicitud => {
         if (solicitud.remitenteId === eventData.usuarioId) {
+          console.log(`🔄 Actualizando estado de amistad de ${eventData.usuarioId} a: ${eventData.estado}`);
           return {
             ...solicitud,
             estado: eventData.estado === 'amigos' ? 'aceptada' : solicitud.estado
@@ -97,12 +99,18 @@ const SolicitudesPendientes = () => {
         const solicitudesHistoricas = notificaciones.data
           .filter(notif => notif.tipo === 'solicitud_amistad' && notif.leida)
           .map(notif => {
-            // Determinar el estado basado en si la notificación fue respondida
-            let estado = 'aceptada'; // Asumimos que las leídas fueron aceptadas
+            // Determinar el estado basado en información disponible
+            let estado = 'pendiente'; // Estado por defecto
 
-            // Si hay información adicional en los datos de la notificación
+            // Si hay información específica de respuesta en los datos
             if (notif.datos && notif.datos.respuesta) {
               estado = notif.datos.respuesta;
+            } else if (notif.datos && notif.datos.estado) {
+              estado = notif.datos.estado;
+            } else if (notif.leida) {
+              // Si está leída pero no tiene respuesta específica, 
+              // probablemente fue aceptada (pero no asumimos)
+              estado = 'aceptada';
             }
 
             return {
@@ -128,58 +136,6 @@ const SolicitudesPendientes = () => {
         );
 
         todasLasSolicitudes.push(...solicitudesUnicas);
-      }
-
-      // 3. Si no hay datos reales, agregar datos de ejemplo para testing
-      if (todasLasSolicitudes.length === 0) {
-        const solicitudesEjemplo = [
-          {
-            _id: 'ejemplo1',
-            remitenteId: 'user1',
-            remitente: {
-              primernombreUsuario: 'Ana',
-              primerapellidoUsuario: 'García',
-              fotoPerfil: '',
-              cargoFundacion: 'Coordinadora',
-              ciudadUsuario: 'Madrid',
-              paisUsuario: 'España'
-            },
-            estado: 'pendiente',
-            fechaCreacion: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-            fechaRespuesta: null
-          },
-          {
-            _id: 'ejemplo2',
-            remitenteId: 'user2',
-            remitente: {
-              primernombreUsuario: 'Carlos',
-              primerapellidoUsuario: 'Rodríguez',
-              fotoPerfil: '',
-              cargoFundacion: 'Voluntario',
-              ciudadUsuario: 'Barcelona',
-              paisUsuario: 'España'
-            },
-            estado: 'aceptada',
-            fechaCreacion: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-            fechaRespuesta: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
-          },
-          {
-            _id: 'ejemplo3',
-            remitenteId: 'user3',
-            remitente: {
-              primernombreUsuario: 'María',
-              primerapellidoUsuario: 'López',
-              fotoPerfil: '',
-              cargoFundacion: 'Administradora',
-              ciudadUsuario: 'Valencia',
-              paisUsuario: 'España'
-            },
-            estado: 'rechazada',
-            fechaCreacion: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-            fechaRespuesta: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString()
-          }
-        ];
-        todasLasSolicitudes.push(...solicitudesEjemplo);
       }
 
       setSolicitudes(todasLasSolicitudes);

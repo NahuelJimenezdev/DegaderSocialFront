@@ -207,6 +207,21 @@ export const amistadesAPI = {
       console.error('Error obteniendo amigos:', error);
       throw error;
     }
+  },
+
+  // Eliminar amistad
+  eliminarAmigo: async (amigoId) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/amigos/eliminar`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ amigoId })
+      });
+      return await handleResponse(response);
+    } catch (error) {
+      console.error('Error eliminando amistad:', error);
+      throw error;
+    }
   }
 };
 

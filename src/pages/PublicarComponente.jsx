@@ -7,8 +7,10 @@ import {
   Send,
   X
 } from 'lucide-react';
+import EmojiSelector from '../components/EmojiSelector';
+import CrearEventoModal from '../components/CrearEventoModal';
 
-const PublicarComponente = ({ usuario, onPublicar }) => {
+const PublicarComponente = ({ usuario, onPublicar, onEventoCreado }) => {
   const [contenido, setContenido] = useState('');
   const [titulo, setTitulo] = useState('');
   const [tipoPublicacion, setTipoPublicacion] = useState('publicacion');
@@ -16,9 +18,30 @@ const PublicarComponente = ({ usuario, onPublicar }) => {
   const [videos, setVideos] = useState([]);
   const [subiendo, setSubiendo] = useState(false);
   const [error, setError] = useState('');
+  const [mostrarModalEvento, setMostrarModalEvento] = useState(false);
 
   const imagenInputRef = useRef(null);
   const videoInputRef = useRef(null);
+  const contenidoInputRef = useRef(null);
+
+  // Función para agregar emoji al contenido
+  const handleEmojiSelect = (emoji) => {
+    const textarea = contenidoInputRef.current;
+    if (textarea) {
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const newText = contenido.substring(0, start) + emoji + contenido.substring(end);
+      setContenido(newText);
+
+      // Reposicionar el cursor después del emoji
+      setTimeout(() => {
+        textarea.selectionStart = textarea.selectionEnd = start + emoji.length;
+        textarea.focus();
+      }, 0);
+    } else {
+      setContenido(contenido + emoji);
+    }
+  };
 
   const handleImagenChange = (e) => {
     const files = Array.from(e.target.files);
@@ -79,7 +102,7 @@ const PublicarComponente = ({ usuario, onPublicar }) => {
   };
 
   // En PublicarComponente.jsx - modifica handlePublicar
-  // En PublicarComponente.jsx - REEMPLAZA la función handlePublicar completa:
+  // Función principal mejorada
   const handlePublicar = async () => {
     // Validaciones
     if (!contenido.trim() && imagenes.length === 0 && videos.length === 0) {
@@ -94,54 +117,33 @@ const PublicarComponente = ({ usuario, onPublicar }) => {
 
     setSubiendo(true);
     setError('');
-    console.log('🔄 Intentando publicar...');
+    console.log('🔄 Enviando publicación al backend...');
 
     try {
-      // 1. PRIMERO crear la publicación localmente (instantáneo)
-      const nuevaPublicacionSimulada = {
-        _id: 'mock-' + Date.now(),
-        autor: {
-          _id: usuario._id,
-          primernombreUsuario: usuario.primernombreUsuario,
-          primerapellidoUsuario: usuario.primerapellidoUsuario,
-          fotoPerfil: usuario.fotoPerfil
-        },
-        contenido,
-        titulo: tipoPublicacion === 'evento' ? titulo : undefined,
-        imagenes: imagenes.map(img => img.preview),
-        videos: videos.map(vid => vid.preview),
-        fechaPublicacion: new Date(),
-        likes: [],
-        comentarios: [],
-        esLocal: true // Marcar como publicación local
-      };
+      // Enviar directamente al backend
+      const data = await intentarEnviarAlBackend();
 
-      // 2. Inmediatamente mostrar al usuario
-      if (onPublicar) {
-        onPublicar(nuevaPublicacionSimulada);
-      }
+      console.log('✅ Publicación creada exitosamente:', data);
 
-      // 3. Limpiar el formulario (rápido)
+      // Limpiar el formulario
       setContenido('');
       setTitulo('');
 
-      // 4. Liberar memoria de previews
+      // Liberar memoria de previews
       imagenes.forEach(img => URL.revokeObjectURL(img.preview));
       videos.forEach(vid => URL.revokeObjectURL(vid.preview));
 
       setImagenes([]);
       setVideos([]);
 
-      console.log('✅ Publicación local exitosa');
-
-      // 5. Intentar enviar al backend en SEGUNDO PLANO (sin esperar)
-      intentarEnviarAlBackend().catch(error => {
-        console.warn('⚠️ No se pudo sincronizar con backend:', error.message);
-      });
+      // Notificar al componente padre para que recargue las publicaciones
+      if (onPublicar) {
+        onPublicar(data.publicacion);
+      }
 
     } catch (error) {
-      console.error('❌ Error inesperado:', error);
-      setError('Error al crear la publicación');
+      console.error('❌ Error creando publicación:', error);
+      setError('Error al crear la publicación: ' + error.message);
     } finally {
       setSubiendo(false);
     }
@@ -253,9 +255,15 @@ const PublicarComponente = ({ usuario, onPublicar }) => {
                 onChange={(e) => setTipoPublicacion(e.target.value)}
                 style={{ width: 'auto' }}
               >
-                <option value="publicacion">Publicación</option>
-                <option value="evento">Evento</option>
+                <option value="publicacion">📝 Publicación Normal</option>
+                <option value="evento">📅 Evento Simple</option>
               </select>
+              <small className="text-muted d-block mt-1">
+                {tipoPublicacion === 'publicacion'
+                  ? 'Comparte pensamientos, fotos y videos'
+                  : 'Evento básico con título y descripción'
+                }
+              </small>
             </div>
 
             {/* Título para eventos */}
@@ -273,6 +281,7 @@ const PublicarComponente = ({ usuario, onPublicar }) => {
 
             {/* Área de texto */}
             <textarea
+              ref={contenidoInputRef}
               className="form-control mb-3"
               placeholder={`¿Qué estás pensando, ${usuario.primernombreUsuario}?`}
               value={contenido}
@@ -371,29 +380,23 @@ const PublicarComponente = ({ usuario, onPublicar }) => {
                   <span>Video</span>
                 </button>
 
-                {/* Botón para emojis (placeholder) */}
+                {/* Selector de emojis */}
+                <EmojiSelector
+                  onEmojiSelect={handleEmojiSelect}
+                  className="d-inline-block"
+                />
+
+                {/* Botón para crear evento completo */}
                 <button
                   type="button"
                   className="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1"
-                  onClick={() => alert('Selector de emojis pronto')}
+                  onClick={() => setMostrarModalEvento(true)}
                   disabled={subiendo}
+                  title="Crear evento profesional con fechas, ubicación, asistentes y más opciones"
                 >
-                  <Smile size={16} />
-                  <span>Emoji</span>
+                  <Calendar size={16} />
+                  <span>Evento/Reunión</span>
                 </button>
-
-                {/* Si es evento, mostrar selector de fecha */}
-                {tipoPublicacion === 'evento' && (
-                  <button
-                    type="button"
-                    className="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1"
-                    onClick={() => alert('Selector de fecha pronto')}
-                    disabled={subiendo}
-                  >
-                    <Calendar size={16} />
-                    <span>Fecha</span>
-                  </button>
-                )}
               </div>
 
               {/* Botón de publicar */}
@@ -420,6 +423,21 @@ const PublicarComponente = ({ usuario, onPublicar }) => {
           </div>
         </div>
       </div>
+
+      {/* Modal para crear evento */}
+      <CrearEventoModal
+        show={mostrarModalEvento}
+        onHide={() => setMostrarModalEvento(false)}
+        usuario={usuario}
+        onEventoCreado={(evento) => {
+          console.log('✅ Evento creado:', evento);
+          setMostrarModalEvento(false);
+          // Llamar al callback del padre para recargar eventos
+          if (onEventoCreado) {
+            onEventoCreado(evento);
+          }
+        }}
+      />
     </div>
   );
 };

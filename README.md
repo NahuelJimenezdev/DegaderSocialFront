@@ -33,11 +33,11 @@
 
 La plataforma FHS\&L busca **conectar y organizar** a directivos, líderes, profesionales y miembros de iglesias y obras asociadas en distintos países, ofreciendo:
 
-* Un **feed social** para publicaciones e interacciones.
-* **Gestión administrativa** con jerarquías por país/ región/ departamento/ municipio.
-* **Reuniones y eventos** (presenciales y virtuales).
-* **Directorio** de personas y áreas.
-* **Notificaciones** y workflows de aprobación (p. ej. solicitudes de acceso).
+- Un **feed social** para publicaciones e interacciones.
+- **Gestión administrativa** con jerarquías por país/ región/ departamento/ municipio.
+- **Reuniones y eventos** (presenciales y virtuales).
+- **Directorio** de personas y áreas.
+- **Notificaciones** y workflows de aprobación (p. ej. solicitudes de acceso).
 
 El frontend está construido con **React + Vite**, consume APIs de un backend Node/Express con base de datos **MongoDB**.
 
@@ -45,15 +45,17 @@ El frontend está construido con **React + Vite**, consume APIs de un backend No
 
 ## Alcance y funcionalidades
 
-* **Registro / Login** con verificación de estado del usuario (`activo`, `pendiente`, `inactivo`).
-* **Roles y permisos**: `director`, `subdirector`, `encargado`, `profesional`, `miembro`, `visitante`.
-* **Perfiles** (avatar, biografía, datos de contacto).
-* **Publicaciones** con texto, imágenes y reacciones (likes, comentarios).
-* **Grupos** (por áreas y niveles), con membresías y moderación.
-* **Reuniones / Meetings** (gestión, listado, acceso por código si corresponde).
-* **Notificaciones** (in-app).
-* **Búsqueda unificada** (personas, grupos, lugares).
-* **Soporte multi-país** (p. ej., Argentina, Colombia, Paraguay) con **jerarquías** ajustables por territorio.
+- **Registro / Login** con verificación de estado del usuario (`activo`, `pendiente`, `inactivo`).
+- **Roles y permisos**: `director`, `subdirector`, `encargado`, `profesional`, `miembro`, `visitante`.
+- **Perfiles** (avatar, biografía, datos de contacto, upload de fotos y videos).
+- **Publicaciones** con texto, imágenes y reacciones (likes, comentarios).
+- **Grupos** (por áreas y niveles), con membresías y moderación.
+- **Reuniones / Meetings** (gestión, listado, acceso por código si corresponde).
+- **Eventos** con configuración avanzada de privacidad y aprobaciones.
+- **Notificaciones** (in-app) con sistema de amistades y contactos.
+- **Búsqueda unificada** (personas, grupos, lugares).
+- **Sistema de roles organizacionales** con gestión de jerarquías.
+- **Soporte multi-país** (p. ej., Argentina, Colombia, Paraguay) con **jerarquías** ajustables por territorio.
 
 ---
 
@@ -61,22 +63,22 @@ El frontend está construido con **React + Vite**, consume APIs de un backend No
 
 **Grupos Directivos Generales (Nivel Directivo)**
 
-* Director Ejecutivo, Junta Directiva, Secretaría Ejecutiva, Equipo de Licitación y Adquisiciones.
+- Director Ejecutivo, Junta Directiva, Secretaría Ejecutiva, Equipo de Licitación y Adquisiciones.
 
 **Órganos de Control**
 
-* Control Interno y Seguimiento, Asuntos Éticos.
+- Control Interno y Seguimiento, Asuntos Éticos.
 
 **Organismos Internacionales**
 
-* Salvación Mundial, Misión Internacional de Paz.
+- Salvación Mundial, Misión Internacional de Paz.
 
 **Jerarquía por nivel (aplicada por país/territorio):**
 
-* **Dirección Nacional** (áreas: Planeación, Asuntos Étnicos, Infraestructura, Sostenibilidad, RRHH y Seguridad Laboral, Jurídica, Salud, Psicosocial, Protección Animal, Educación, Financiera, Comunicación, Seguridad).
-* **Dirección Regional** (mismas áreas, con alcance regional).
-* **Dirección Departamental** → Coordinaciones por área.
-* **Coordinación Municipal** → Coordinaciones por área.
+- **Dirección Nacional** (áreas: Planeación, Asuntos Étnicos, Infraestructura, Sostenibilidad, RRHH y Seguridad Laboral, Jurídica, Salud, Psicosocial, Protección Animal, Educación, Financiera, Comunicación, Seguridad).
+- **Dirección Regional** (mismas áreas, con alcance regional).
+- **Dirección Departamental** → Coordinaciones por área.
+- **Coordinación Municipal** → Coordinaciones por área.
 
 > El sistema de permisos y el contenido visible en la interfaz se ajustan automáticamente al **nivel y área** del usuario.
 
@@ -84,18 +86,18 @@ El frontend está construido con **React + Vite**, consume APIs de un backend No
 
 ## Arquitectura
 
-* **Frontend SPA (este repo)**: React + Vite, estado por hooks/context, ruteo con React Router.
-* **Backend (API REST)**: Node.js/Express, JWT y control de roles, MongoDB (Mongoose).
-* **CDN/Storage** (opcional): para medios estáticos (avatares, imágenes de publicaciones).
-* **Estrategia de seguridad**: CORS, JWT Storage seguro, sanitización de inputs, validación en cliente y servidor.
+- **Frontend SPA (este repo)**: React + Vite, estado por hooks/context, ruteo con React Router.
+- **Backend (API REST)**: Node.js/Express, JWT y control de roles, MongoDB (Mongoose).
+- **CDN/Storage** (opcional): para medios estáticos (avatares, imágenes de publicaciones).
+- **Estrategia de seguridad**: CORS, JWT Storage seguro, sanitización de inputs, validación en cliente y servidor.
 
 ---
 
 ## Tecnologías
 
-* **Frontend**: React 18, Vite, React Router, Fetch/axios, lucide-react (iconos), TailwindCSS (opcional, recomendado).
-* **Testing** (recomendado): Vitest + React Testing Library.
-* **Calidad** (opcional): ESLint, Prettier, Husky + lint-staged.
+- **Frontend**: React 18, Vite, React Router, Fetch/axios, lucide-react (iconos), TailwindCSS (opcional, recomendado).
+- **Testing** (recomendado): Vitest + React Testing Library.
+- **Calidad** (opcional): ESLint, Prettier, Husky + lint-staged.
 
 ---
 
@@ -108,15 +110,19 @@ El frontend está construido con **React + Vite**, consume APIs de un backend No
 │  ├─ components/
 │  │  ├─ Auth/           # Formularios Login/Registro
 │  │  ├─ Layout/         # Navbar, Sidebar, layouts
-│  │  ├─ Profile/        # EditAvatar, EditBio, ProfileView
+│  │  ├─ Profile/        # EditAvatar, EditBio, ProfileView, UploadFiles
 │  │  ├─ Feed/           # PostCard, Composer, Feed
 │  │  ├─ Groups/         # Vista y gestión de grupos
 │  │  ├─ Meetings/       # Reuniones/Rooms/Accesos
-│  │  └─ Admin/          # Panel admin (roles, aprobaciones)
+│  │  ├─ Events/         # CrearEventoModal, ConfiguracionPrivacidad, GestionRegistrosEvento
+│  │  ├─ Notifications/  # Sistema de notificaciones y amistades
+│  │  ├─ Contacts/       # SelectorContactos, gestión de amistades
+│  │  ├─ Roles/          # GestionRoles, jerarquías organizacionales
+│  │  └─ Admin/          # Panel admin (roles, aprobaciones, debug)
 │  ├─ pages/             # Páginas de alto nivel (routing)
-│  ├─ hooks/             # useAuth, useFetch, etc.
-│  ├─ context/           # AuthContext, UIContext
-│  ├─ services/          # API clients (usuarios, posts, grupos)
+│  ├─ hooks/             # useAuth, useFetch, useNotifications, etc.
+│  ├─ context/           # AuthContext, UIContext, NotificationContext
+│  ├─ services/          # API clients (usuarios, posts, grupos, eventos, amistades)
 │  ├─ lib/               # utilidades (apiFetch, storage, validators)
 │  ├─ styles/            # estilos globales (si aplica)
 │  ├─ assets/            # imágenes, logos (si aplica)
@@ -149,9 +155,9 @@ VITE_APP_NAME="FHS&L Plataforma"
 
 ### Requisitos
 
-* Node.js 18+ (recomendado 20+)
-* npm 9+ / pnpm / yarn
-* Backend en marcha (Node/Express + MongoDB) en `VITE_API_URL`
+- Node.js 18+ (recomendado 20+)
+- npm 9+ / pnpm / yarn
+- Backend en marcha (Node/Express + MongoDB) en `VITE_API_URL`
 
 ### Instalación
 
@@ -173,33 +179,34 @@ npm run preview
 
 ## Scripts disponibles
 
-* `dev`: Ejecuta Vite en modo desarrollo con HMR.
-* `build`: Genera la build de producción.
-* `preview`: Sirve la build ya generada.
-* `lint` *(opcional)*: Ejecuta ESLint.
-* `test` *(opcional)*: Ejecuta Vitest.
+- `dev`: Ejecuta Vite en modo desarrollo con HMR.
+- `build`: Genera la build de producción.
+- `preview`: Sirve la build ya generada.
+- `lint` _(opcional)_: Ejecuta ESLint.
+- `test` _(opcional)_: Ejecuta Vitest.
 
 ---
 
 ## Convenciones de código
 
-* **Estilo**: ESLint + Prettier (cuando estén habilitados).
-* **Nombres**: componentes en PascalCase, hooks en camelCase iniciando con `use`.
-* **Carpetas**: agrupar por dominio (Auth, Profile, Feed) para alta cohesión.
-* **Commits** *(sugerido)*: Conventional Commits (`feat:`, `fix:`, `docs:`, etc.).
+- **Estilo**: ESLint + Prettier (cuando estén habilitados).
+- **Nombres**: componentes en PascalCase, hooks en camelCase iniciando con `use`.
+- **Carpetas**: agrupar por dominio (Auth, Profile, Feed) para alta cohesión.
+- **Commits** _(sugerido)_: Conventional Commits (`feat:`, `fix:`, `docs:`, etc.).
 
 ---
 
 ## Autenticación y autorización
 
-* **Login**: correo + contraseña.
-* **Token**: JWT almacenado de forma segura (p. ej. Cookie HTTPOnly o, si se usa `localStorage`, extremar cuidados).
-* **Estados** de usuario:
+- **Login**: correo + contraseña.
+- **Token**: JWT almacenado de forma segura (p. ej. Cookie HTTPOnly o, si se usa `localStorage`, extremar cuidados).
+- **Estados** de usuario:
 
-  * `pendiente`: acceso limitado (visitante).
-  * `activo`: acceso según rol.
-  * `inactivo`: acceso denegado.
-* **Roles** (de menor a mayor privilegio): `visitante` → `miembro` → `profesional` → `encargado` → `subdirector` → `director`.
+  - `pendiente`: acceso limitado (visitante).
+  - `activo`: acceso según rol.
+  - `inactivo`: acceso denegado.
+
+- **Roles** (de menor a mayor privilegio): `visitante` → `miembro` → `profesional` → `encargado` → `subdirector` → `director`.
 
 > El frontend muestra/oculta secciones según el rol. Por ejemplo, herramientas de depuración de imágenes o paneles de administración sólo para `admin/director` (según reglas del negocio).
 
@@ -209,42 +216,59 @@ npm run preview
 
 ### 1) Autenticación
 
-* Formularios de Login/Registro, validaciones, flujos de error (`401`, `Credenciales incorrectas`, `Usuario inactivo`, etc.).
-* Hook `useAuth` para estado global (usuario, token, loading).
+- Formularios de Login/Registro, validaciones, flujos de error (`401`, `Credenciales incorrectas`, `Usuario inactivo`, etc.).
+- Hook `useAuth` para estado global (usuario, token, loading).
 
 ### 2) Perfil de usuario
 
-* **Editar avatar** (validación de tamaño y tipo, vista previa, upload al backend).
-* **Editar biografía** (≤ 300 caracteres).
-* Vista pública/privada de perfil con metadatos: nombre, email, ciudad, país, jerarquía/área.
+- **Editar avatar** (validación de tamaño y tipo, vista previa, upload al backend).
+- **Upload de archivos multimedia** (fotos y videos con validación avanzada).
+- **Editar biografía** (≤ 300 caracteres).
+- Vista pública/privada de perfil con metadatos: nombre, email, ciudad, país, jerarquía/área.
+- **Sistema de amistades** con solicitudes y gestión de contactos.
 
 ### 3) Feed de publicaciones
 
-* Crear/leer publicaciones, reacciones, comentarios.
-* Paginación/infinite scroll (si aplica).
-* Manejo de errores de red.
+- Crear/leer publicaciones, reacciones, comentarios.
+- Paginación/infinite scroll (si aplica).
+- Manejo de errores de red.
 
 ### 4) Grupos
 
-* Listado y detalle.
-* Membresía y permisos según área y nivel jerárquico.
-* Publicaciones filtradas por grupo.
+- Listado y detalle.
+- Membresía y permisos según área y nivel jerárquico.
+- Publicaciones filtradas por grupo.
 
 ### 5) Reuniones
 
-* Listado de reuniones (con acceso por rol o código).
-* Integración de enlaces o embeddings (cuando aplique).
+- Listado de reuniones (con acceso por rol o código).
+- Integración de enlaces o embeddings (cuando aplique).
 
 ### 6) Búsqueda
 
-* Barra de búsqueda con debounce y dropdown (personas, grupos, lugares).
-* Navegación hacia resultados (páginas de detalle).
+- Barra de búsqueda con debounce y dropdown (personas, grupos, lugares).
+- Navegación hacia resultados (páginas de detalle).
 
 ### 7) Administración
 
-* Aprobación/denegación de solicitudes.
-* Gestión de roles/estados.
-* Vistas por país/área/nivel (Nacional, Regional, Departamental, Municipal).
+- Aprobación/denegación de solicitudes.
+- Gestión de roles/estados.
+- Vistas por país/área/nivel (Nacional, Regional, Departamental, Municipal).
+- **Sistema de gestión de roles organizacionales** con jerarquías complejas.
+- **Panel de debug** para desarrollo y testing.
+
+### 8) Eventos
+
+- **Creación de eventos** con configuración avanzada de privacidad.
+- **Configuración de aprobaciones** para participantes.
+- **Gestión de registros** y control de asistencia.
+- **Selector de contactos** para invitaciones y aprobaciones.
+
+### 9) Sistema de notificaciones
+
+- **Notificaciones en tiempo real** para solicitudes de amistad.
+- **Gestión de amistades** con estados (pendiente, aceptada, rechazada).
+- **Sistema de contactos** integrado con eventos y grupos.
 
 ---
 
@@ -272,6 +296,25 @@ npm run preview
   fechaRegistro: Date,
   ultimaConexion: Date,
   notificaciones: [{ mensaje, leido, fecha }],
+  // Nuevos campos implementados
+  archivosMultimedia: [{
+    tipo: String,                   // 'imagen' | 'video'
+    url: String,
+    nombreOriginal: String,
+    tamaño: Number,
+    fechaSubida: Date
+  }],
+  solicitudesAmistad: [{
+    usuario: ObjectId,
+    estado: String,                 // 'pendiente' | 'aceptada' | 'rechazada'
+    fecha: Date
+  }],
+  rolOrganizacional: {
+    nivel: String,                  // 'nacional' | 'regional' | 'departamental' | 'municipal'
+    area: String,                   // 'planeacion' | 'salud' | 'educacion' | etc.
+    cargo: String,
+    pais: String
+  },
   createdAt: Date,
   updatedAt: Date
 }
@@ -279,14 +322,20 @@ npm run preview
 
 **Endpoints esperados (ejemplos)**
 
-* `POST /api/usuariosInicios/login` → `{ token, usuario }`
-* `POST /api/usuariosInicios/register`
-* `GET  /api/me` (requiere JWT)
-* `PATCH /api/me/avatar` (multipart/form-data)
-* `PATCH /api/me/bio`
-* `GET  /api/publicaciones` / `POST /api/publicaciones`
-* `GET  /api/grupos` / `POST /api/grupos`
-* `GET  /api/reuniones`
+- `POST /api/usuariosInicios/login` → `{ token, usuario }`
+- `POST /api/usuariosInicios/register`
+- `GET  /api/me` (requiere JWT)
+- `PATCH /api/me/avatar` (multipart/form-data)
+- `PATCH /api/me/bio`
+- `POST /api/upload-multimedia` (multipart/form-data)
+- `GET  /api/publicaciones` / `POST /api/publicaciones`
+- `GET  /api/grupos` / `POST /api/grupos`
+- `GET  /api/reuniones`
+- `GET  /api/eventos` / `POST /api/eventos`
+- `GET  /api/amistades` / `POST /api/amistades`
+- `PATCH /api/amistades/:id/estado`
+- `GET  /api/notificaciones` / `PATCH /api/notificaciones/:id/leida`
+- `GET  /api/roles` / `POST /api/roles`
 
 > Los nombres/paths pueden variar; ajustar el cliente en `src/services/*`.
 
@@ -294,9 +343,9 @@ npm run preview
 
 ## Pruebas
 
-* **Unitarias**: componentes UI y utilidades.
-* **Integración**: hooks y servicios (mock de fetch/axios).
-* **E2E** *(opcional)*: Cypress/Playwright para flujos críticos (login, publicar, unirse a grupo).
+- **Unitarias**: componentes UI y utilidades.
+- **Integración**: hooks y servicios (mock de fetch/axios).
+- **E2E** _(opcional)_: Cypress/Playwright para flujos críticos (login, publicar, unirse a grupo).
 
 ---
 
@@ -307,6 +356,7 @@ npm run preview
    ```bash
    npm run build
    ```
+
 2. Servir `/dist` con un servidor estático (Nginx, Apache, Vercel, Netlify).
 3. Configurar variables de entorno y CORS en el **backend** para el dominio final.
 4. **Cache**: idealmente CDN para assets estáticos (imágenes, JS/CSS minificado).
@@ -317,19 +367,22 @@ npm run preview
 
 ## Accesibilidad, i18n y rendimiento
 
-* **A11y**: usar roles ARIA, contraste adecuado, navegación por teclado.
-* **i18n**: arquitectura preparada para ES (AR/CO) y futuro EN/PT (biblioteca i18next recomendada).
-* **Performance**: code-splitting por rutas, imágenes optimizadas (WebP/AVIF), memoización en listas grandes.
+- **A11y**: usar roles ARIA, contraste adecuado, navegación por teclado.
+- **i18n**: arquitectura preparada para ES (AR/CO) y futuro EN/PT (biblioteca i18next recomendada).
+- **Performance**: code-splitting por rutas, imágenes optimizadas (WebP/AVIF), memoización en listas grandes.
 
 ---
 
 ## Roadmap
 
-* **v0.1 (MVP)**: Auth, Perfil, Feed básico, Notificaciones mínimas.
-* **v0.2**: Grupos + moderación, Búsqueda unificada.
-* **v0.3**: Reuniones con acceso por código + calendario básico.
-* **v0.4**: Jerarquía multi-país completa con vistas por nivel y área.
-* **v1.0**: Auditoría (log de acciones), paneles por áreas, reportes.
+- **v0.1 (MVP)**: Auth, Perfil, Feed básico, Notificaciones mínimas. ✅ **COMPLETADO**
+- **v0.2**: Grupos + moderación, Búsqueda unificada. ✅ **COMPLETADO**
+- **v0.3**: Reuniones con acceso por código + calendario básico. ✅ **COMPLETADO**
+- **v0.4**: Jerarquía multi-país completa con vistas por nivel y área. ✅ **COMPLETADO**
+- **v0.5**: Sistema de eventos con configuración avanzada de privacidad. ✅ **COMPLETADO**
+- **v0.6**: Sistema de amistades y notificaciones en tiempo real. ✅ **COMPLETADO**
+- **v0.7**: Upload multimedia y gestión de archivos. ✅ **COMPLETADO**
+- **v1.0**: Auditoría (log de acciones), paneles por áreas, reportes. 🔄 **EN DESARROLLO**
 
 ---
 
@@ -341,8 +394,8 @@ npm run preview
 
 **Guías sugeridas**
 
-* Code Review: lint sin errores, tests pasando, cobertura suficiente.
-* UI: consistencia visual (espaciados, tipografía, estados de carga/empty/error).
+- Code Review: lint sin errores, tests pasando, cobertura suficiente.
+- UI: consistencia visual (espaciados, tipografía, estados de carga/empty/error).
 
 ---
 
@@ -356,12 +409,13 @@ Proyecto **privado** de la Fundación Humanitaria Sol & Luna.
 
 ### Notas útiles (Windows & Git)
 
-* Si ves avisos de **CRLF/LF**, puedes normalizar con:
+- Si ves avisos de **CRLF/LF**, puedes normalizar con:
 
   ```bash
   git config core.autocrlf true   # Windows recomendado
   ```
-* Revisa que `VITE_API_URL` apunte al backend correcto y que CORS esté habilitado para tu origen de frontend.
+
+- Revisa que `VITE_API_URL` apunte al backend correcto y que CORS esté habilitado para tu origen de frontend.
 
 ---
 
@@ -371,4 +425,3 @@ Proyecto **privado** de la Fundación Humanitaria Sol & Luna.
 **Contacto:** Nahuel Jiménez  
 **Soporte técnico (email):** [naedjima93@gmail.com](mailto:naedjima93@gmail.com)  
 **WhatsApp:** [Escribime por WhatsApp](https://wa.me/5491166582695?text=Hola%20Nahuel%2C%20tengo%20una%20consulta%20sobre%20Degader%20Social.)
-

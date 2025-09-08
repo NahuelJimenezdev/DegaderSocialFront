@@ -16,6 +16,8 @@ import AdminDashboard from "./pages/AdminDashboard";
 import Busqueda from "./pages/Busqueda";
 import PerfilVisitante from "./pages/PerfilVisitante";
 import SolicitudesPendientes from "./components/solicitudesPendientes/SolicitudesPendientes";
+import GestionRoles from "./pages/admin/GestionRoles";
+import PruebaContactos from "./components/debug/PruebaContactos";
 
 function MainLayout() {
   return (
@@ -45,6 +47,8 @@ function App() {
         <Route path="/friends" element={<AmigosUser />} />
         <Route path="/meetings" element={<Reuniones />} />
         <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/roles" element={<GestionRoles />} />
+        <Route path="/debug/contactos" element={<PruebaContactos />} />
         <Route path="/perfilUser" element={<PerfilUser />} />
         <Route path="/perfil/:id" element={<PerfilVisitante />} />
         <Route path="/solicitudes" element={<SolicitudesPendientes />} />
