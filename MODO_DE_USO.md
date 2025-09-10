@@ -696,14 +696,14 @@ const testSuiteAPIs = {
 #### 1. Autenticación y Usuarios
 
 ```javascript
-// POST /api/usuariosInicios/login
+// POST /api/usuarios/login
 {
   "correoUsuario": "usuario@ejemplo.com",
   "contraseniaUsuario": "password123"
 }
 // Response: { token, usuario }
 
-// POST /api/usuariosInicios/register
+// POST /api/usuarios/register
 {
   "nombreUsuario": "Nombre",
   "apellidoUsuario": "Apellido",

@@ -217,7 +217,7 @@ const PublicarComponente = ({ usuario, onPublicar, onEventoCreado }) => {
       <div className="card-body p-2 p-md-3">
         <div className="d-flex gap-2 gap-md-3">
           {/* Foto de perfil */}
-          <div className="flex-shrink-0">
+          <div className="flex-shrink-0 d-none d-md-block">
             <div
               className="rounded-circle overflow-hidden"
               style={{ width: 40, height: 40 }}

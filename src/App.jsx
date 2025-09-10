@@ -1,9 +1,10 @@
 // App.jsx
-import { BrowserRouter, Routes, Route, Outlet, Navigate } from "react-router-dom";
+import { Routes, Route, Outlet, Navigate } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 import { Navbar } from "./components/layout/Navbar";
 import "./App.css";
 
-import Login from "./auth/Login";
 import Sidebar from "./components/layout/Sidebar";
 import MobileBottomNav from "./components/layout/MobileBottomNav";
 import Home from "./pages/Home";
@@ -31,7 +32,7 @@ function MainLayout() {
         </div>
 
         {/* Contenido principal */}
-        <main className="flex-grow-1 p-2 p-md-3" style={{ paddingBottom: '80px' }}>
+        <main className="flex-grow-1 p-2 p-md-3">
           <div className="container-fluid">
             <Outlet />
           </div>
@@ -46,27 +47,43 @@ function MainLayout() {
   );
 }
 
-function App() {
+function AppContent() {
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route element={<MainLayout />}>
-        <Route index element={<Navigate to="/feed" replace />} />
-        <Route path="/feed" element={<Home />} />
-        <Route path="/busqueda" element={<Busqueda />} />
-        <Route path="/groups" element={<GruposUser />} />
-        <Route path="/messages" element={<Mensajes />} />
-        <Route path="/files" element={<CarpetasUser />} />
-        <Route path="/friends" element={<AmigosUser />} />
-        <Route path="/meetings" element={<Reuniones />} />
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/admin/roles" element={<GestionRoles />} />
-        <Route path="/debug/contactos" element={<PruebaContactos />} />
-        <Route path="/perfilUser" element={<PerfilUser />} />
-        <Route path="/perfil/:id" element={<PerfilVisitante />} />
-        <Route path="/solicitudes" element={<SolicitudesPendientes />} />
-      </Route>
+      {/* Rutas públicas */}
+      <Route path="/perfil/:id" element={<PerfilVisitante />} />
+
+      {/* Rutas protegidas */}
+      <Route path="/*" element={
+        <ProtectedRoute>
+          <Routes>
+            <Route element={<MainLayout />}>
+              <Route index element={<Navigate to="/feed" replace />} />
+              <Route path="/feed" element={<Home />} />
+              <Route path="/busqueda" element={<Busqueda />} />
+              <Route path="/groups" element={<GruposUser />} />
+              <Route path="/messages" element={<Mensajes />} />
+              <Route path="/files" element={<CarpetasUser />} />
+              <Route path="/friends" element={<AmigosUser />} />
+              <Route path="/meetings" element={<Reuniones />} />
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin/roles" element={<GestionRoles />} />
+              <Route path="/debug/contactos" element={<PruebaContactos />} />
+              <Route path="/perfilUser" element={<PerfilUser />} />
+              <Route path="/solicitudes" element={<SolicitudesPendientes />} />
+            </Route>
+          </Routes>
+        </ProtectedRoute>
+      } />
     </Routes>
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }
 

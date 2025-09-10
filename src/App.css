@@ -79,12 +79,6 @@
 
 /* Estilos responsive */
 @media (max-width: 768px) {
-  .notification-dropdown {
-    width: 95vw !important;
-    right: 2.5vw !important;
-    left: auto !important;
-  }
-
   .modal-lg {
     max-width: 95%;
   }

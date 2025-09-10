@@ -3,6 +3,10 @@ import { useState, useEffect, useCallback } from 'react';
 import { amistadesAPI } from '../lib/apiNotificaciones';
 import { useAmistadEvents } from './useGlobalEvents';
 
+// Cache simple para evitar llamadas API repetidas
+const estadoCache = new Map();
+const CACHE_TTL = 5000; // 5 segundos
+
 /**
  * Hook personalizado para manejar el estado de amistad con un usuario específico
  * @param {string} usuarioId - ID del usuario con el que se quiere verificar la amistad
@@ -25,6 +29,18 @@ export const useEstadoAmistad = (usuarioId) => {
       return;
     }
 
+    // Verificar cache primero
+    const cacheKey = `estado_${usuarioId}`;
+    const cachedData = estadoCache.get(cacheKey);
+    const now = Date.now();
+
+    if (cachedData && (now - cachedData.timestamp) < CACHE_TTL) {
+      console.log(`📋 [useEstadoAmistad] Usando datos del cache para usuario ${usuarioId}: ${cachedData.estado}`);
+      setEstado(cachedData.estado);
+      setCargando(false);
+      return;
+    }
+
     try {
       setCargando(true);
       setError(null);
@@ -38,6 +54,13 @@ export const useEstadoAmistad = (usuarioId) => {
       if (response.success) {
         const estadoObtenido = response.estado || 'ninguna';
         setEstado(estadoObtenido);
+
+        // Guardar en cache
+        estadoCache.set(cacheKey, {
+          estado: estadoObtenido,
+          timestamp: now
+        });
+
         console.log(`👥 [useEstadoAmistad] Estado de amistad con ${usuarioId}: ${estadoObtenido}`);
 
         if (estadoObtenido === 'amigos') {
@@ -72,6 +95,11 @@ export const useEstadoAmistad = (usuarioId) => {
       if (eventData.usuarioId === usuarioId) {
         console.log(`🔄 Sincronizando estado para usuario ${usuarioId}:`, eventData.estado);
         console.log('📊 Datos del evento:', eventData);
+
+        // Limpiar cache para este usuario cuando se recibe evento externo
+        const cacheKey = `estado_${usuarioId}`;
+        estadoCache.delete(cacheKey);
+
         setEstado(eventData.estado);
       } else {
         console.log(`⏭️ Evento ignorado para usuario ${eventData.usuarioId}, esperaba ${usuarioId}`);
@@ -83,6 +111,11 @@ export const useEstadoAmistad = (usuarioId) => {
       if (eventData.usuarioId === usuarioId) {
         console.log(`🔄 Sincronizando respuesta para usuario ${usuarioId}:`, eventData.accion);
         console.log('📊 Datos del evento:', eventData);
+
+        // Limpiar cache para este usuario cuando se recibe evento externo
+        const cacheKey = `estado_${usuarioId}`;
+        estadoCache.delete(cacheKey);
+
         const nuevoEstado = eventData.accion === 'aceptar' ? 'amigos' : 'ninguna';
         setEstado(nuevoEstado);
       } else {
@@ -107,10 +140,18 @@ export const useEstadoAmistad = (usuarioId) => {
 
       setEstado('solicitud_enviada');
 
-      // Emitir evento global
+      // Limpiar cache para este usuario
+      const cacheKey = `estado_${usuarioId}`;
+      estadoCache.delete(cacheKey);
+
+      // Emitir evento global cruzado
+      const usuarioActualId = localStorage.getItem('userId') || localStorage.getItem('user_id');
+
+      // Para el usuario observado (usuarioId) - le decimos que hay una solicitud pendiente de usuarioActual
       emitAmistadActualizada({
-        usuarioId: usuarioId,
-        estado: 'solicitud_enviada'
+        usuarioId: usuarioActualId,
+        estado: 'solicitud_enviada',
+        relacionConUsuario: usuarioId
       });
 
       console.log(`✅ Solicitud enviada a usuario ${usuarioId}`);
@@ -136,15 +177,31 @@ export const useEstadoAmistad = (usuarioId) => {
 
       setEstado('amigos');
 
-      // Emitir eventos globales
+      // Limpiar cache para este usuario
+      const cacheKey = `estado_${usuarioId}`;
+      estadoCache.delete(cacheKey);
+
+      // Emitir eventos globales cruzados
+      const usuarioActualId = localStorage.getItem('userId') || localStorage.getItem('user_id');
+
       emitSolicitudRespondida({
         usuarioId: usuarioId,
         accion: 'aceptar'
       });
 
+      // Eventos cruzados de amistad actualizada
+      // Para el usuario observado (usuarioId)
+      emitAmistadActualizada({
+        usuarioId: usuarioActualId,
+        estado: 'amigos',
+        relacionConUsuario: usuarioId
+      });
+
+      // Para el usuario actual (quien acepta)
       emitAmistadActualizada({
         usuarioId: usuarioId,
-        estado: 'amigos'
+        estado: 'amigos',
+        relacionConUsuario: usuarioActualId
       });
 
       console.log(`✅ Solicitud aceptada de usuario ${usuarioId}`);
@@ -164,15 +221,31 @@ export const useEstadoAmistad = (usuarioId) => {
 
       setEstado('ninguna');
 
-      // Emitir eventos globales
+      // Limpiar cache para este usuario
+      const cacheKey = `estado_${usuarioId}`;
+      estadoCache.delete(cacheKey);
+
+      // Emitir eventos globales cruzados
+      const usuarioActualId = localStorage.getItem('userId') || localStorage.getItem('user_id');
+
       emitSolicitudRespondida({
         usuarioId: usuarioId,
         accion: 'rechazar'
       });
 
+      // Eventos cruzados de amistad actualizada
+      // Para el usuario observado (usuarioId)
+      emitAmistadActualizada({
+        usuarioId: usuarioActualId,
+        estado: 'rechazada',
+        relacionConUsuario: usuarioId
+      });
+
+      // Para el usuario actual (quien rechaza)
       emitAmistadActualizada({
         usuarioId: usuarioId,
-        estado: 'rechazada'
+        estado: 'rechazada',
+        relacionConUsuario: usuarioActualId
       });
 
       console.log(`✅ Solicitud rechazada de usuario ${usuarioId}`);
@@ -192,10 +265,25 @@ export const useEstadoAmistad = (usuarioId) => {
 
       setEstado('ninguna');
 
-      // Emitir evento global
+      // Limpiar cache para este usuario
+      const cacheKey = `estado_${usuarioId}`;
+      estadoCache.delete(cacheKey);
+
+      // Emitir eventos globales cruzados
+      const usuarioActualId = localStorage.getItem('userId') || localStorage.getItem('user_id');
+
+      // Para el usuario observado (usuarioId)
+      emitAmistadActualizada({
+        usuarioId: usuarioActualId,
+        estado: 'ninguna',
+        relacionConUsuario: usuarioId
+      });
+
+      // Para el usuario actual (quien elimina)
       emitAmistadActualizada({
         usuarioId: usuarioId,
-        estado: 'ninguna'
+        estado: 'ninguna',
+        relacionConUsuario: usuarioActualId
       });
 
       console.log(`✅ Amistad eliminada con usuario ${usuarioId}`);

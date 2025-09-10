@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useProfile } from '../../context/ProfileContext';
+import { useProfile } from '../../context/AuthContext';
 
 function EditAvatar({ onUpdate }) {
   const { updateProfile } = useProfile();

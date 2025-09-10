@@ -56,7 +56,7 @@ const GestionRoles = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:3001/api/usuariosInicios', {
+      const response = await fetch('http://localhost:3001/api/usuarios', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 

@@ -1,6 +1,6 @@
 // BannerUpload.jsx - Componente para subir banner
 import { useState } from "react";
-import { useProfile } from "../../context/ProfileContext";
+import { useProfile } from "../../context/AuthContext";
 
 export default function BannerUpload() {
   const { updateProfile } = useProfile();

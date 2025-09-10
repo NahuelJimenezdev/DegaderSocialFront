@@ -14,7 +14,7 @@ import { SimpleImageTest } from "../components/profile/SimpleImageTest";
 import { ImageUploadTest } from "../components/profile/ImageUploadTest";
 import { apiFetch } from "../lib/api.js";
 import { buildApiUrl, API_CONFIG } from "../lib/config.js";
-import { useProfile } from "../context/ProfileContext";
+import { useProfile } from "../context/AuthContext";
 import PublicarComponente from "./PublicarComponente";
 import { CommentEditor, CommentDisplay } from "../components/comments";
 
@@ -602,8 +602,8 @@ function PerfilUser() {
           color: #111827 !important;
         }
       `}</style>
-      <div className="min-vh-100" style={{ backgroundColor: '#f3f4f6' }}>
-        <div className="container-fluid px-0">
+      <div style={{ backgroundColor: '#f3f4f6', minHeight: 'calc(100vh - 120px)', margin: '-12px', padding: '12px' }}>
+        <div className="container-fluid px-0 pb-4">
           {/* Header del perfil completo */}
           <div className="card shadow-sm border-0 overflow-hidden mb-4">
             {/* Banner */}
@@ -728,7 +728,7 @@ function PerfilUser() {
             </div>
           </div>
 
-          <div className="row g-4">
+          <div className="row g-4 mx-2">
             <div className="col-lg-8 d-flex flex-column gap-4">
               {profile && (<PublicarComponente usuario={profile} onPublicar={manejarNuevaPublicacion} onEventoCreado={manejarNuevoEvento} />)}
 
@@ -1163,7 +1163,7 @@ function PerfilUser() {
             </div>
 
             <div className="col-lg-4 d-flex flex-column gap-4">
-              <div className="card shadow-sm border-0">
+              <div className="card shadow-sm border-0 mx-2">
                 <div className="card-body">
                   <h3 className="h5 mb-3">Información de Contacto</h3>
                   <div className="d-flex flex-column gap-2">

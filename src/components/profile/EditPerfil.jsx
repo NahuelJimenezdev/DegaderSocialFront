@@ -1,6 +1,6 @@
 // EditPerfil.jsx - Componente para subir foto de perfil
 import { useState } from "react";
-import { useProfile } from "../../context/ProfileContext";
+import { useProfile } from "../../context/AuthContext";
 
 export default function EditPerfil() {
   const { updateProfile } = useProfile();

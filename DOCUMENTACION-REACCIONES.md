@@ -214,7 +214,7 @@ const REACTIONS = {
 ```javascript
 reacciones: {
   // ... existentes
-  surprised: [{ type: Schema.Types.ObjectId, ref: "usuariosInicios" }];
+  surprised: [{ type: Schema.Types.ObjectId, ref: "usuarios" }];
 }
 ```
 

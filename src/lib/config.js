@@ -5,11 +5,11 @@ export const API_CONFIG = {
 
   // Endpoints de la API
   ENDPOINTS: {
-    LOGIN: "/api/usuariosInicios/login",
+    LOGIN: "/api/usuarios/login",
     ME: "/api/me",
     AVATAR: "/api/me/avatar",
     BANNER: "/api/me/banner",
-    USER: "/api/usuariosInicios/",
+    USER: "/api/usuarios/",
   },
 
   // Configuración de archivos

@@ -11,7 +11,13 @@ const SolicitudesPendientes = () => {
   const [cargando, setCargando] = useState(true);
 
   // Hook para eventos globales
-  const { onSolicitudRespondida, onAmistadActualizada } = useAmistadEvents();
+  const {
+    onSolicitudRespondida,
+    onAmistadActualizada,
+    emitSolicitudRespondida,
+    emitAmistadActualizada,
+    emitNotificacionLeida
+  } = useAmistadEvents();
 
   useEffect(() => {
     cargarSolicitudes();
@@ -180,7 +186,38 @@ const SolicitudesPendientes = () => {
           : s
       ));
 
-      console.log(`✅ Solicitud ${accion}da exitosamente`);
+      // 🔥 EMITIR EVENTOS GLOBALES PARA SINCRONIZAR OTROS COMPONENTES
+
+      // Para obtener el ID del usuario actual (quien acepta/rechaza)
+      const usuarioActualId = localStorage.getItem('userId') || localStorage.getItem('user_id');
+
+      // 1. Evento de solicitud respondida - para el remitente
+      emitSolicitudRespondida({
+        usuarioId: remitenteId,
+        solicitudId: solicitudId,
+        accion: accion
+      });
+
+      // 2. Eventos de amistad actualizada - CRUZADOS para ambos usuarios
+      const nuevoEstado = accion === 'aceptar' ? 'amigos' : 'rechazada';
+
+      // CLAVE: Emitir eventos cruzados para sincronización bidireccional
+
+      // Para Persona A (remitente) - le decimos que su relación con Persona B cambió
+      emitAmistadActualizada({
+        usuarioId: usuarioActualId, // PersonaB - quien está siendo observado por PersonaA
+        estado: nuevoEstado,
+        relacionConUsuario: remitenteId // PersonaA - quien observa
+      });
+
+      // Para Persona B (receptor) - le decimos que su relación con Persona A cambió  
+      emitAmistadActualizada({
+        usuarioId: remitenteId, // PersonaA - quien está siendo observado por PersonaB
+        estado: nuevoEstado,
+        relacionConUsuario: usuarioActualId // PersonaB - quien observa
+      });
+
+      console.log(`✅ Solicitud ${accion}da exitosamente y eventos cruzados emitidos entre usuarios ${remitenteId} ↔ ${usuarioActualId}`);
 
     } catch (error) {
       console.error(`❌ Error ${accion} solicitud:`, error);

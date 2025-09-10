@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { Home, User as UserIcon, Users, MessageCircle, Calendar, Folder, Settings, MapPin, UserPlus } from "lucide-react";
-import { useProfile } from "../../context/ProfileContext";
+import { useProfile } from "../../context/AuthContext";
 
 function Sidebar() {
   const navigate = useNavigate();

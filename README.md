@@ -322,8 +322,8 @@ npm run preview
 
 **Endpoints esperados (ejemplos)**
 
-- `POST /api/usuariosInicios/login` → `{ token, usuario }`
-- `POST /api/usuariosInicios/register`
+- `POST /api/usuarios/login` → `{ token, usuario }`
+- `POST /api/usuarios/register`
 - `GET  /api/me` (requiere JWT)
 - `PATCH /api/me/avatar` (multipart/form-data)
 - `PATCH /api/me/bio`

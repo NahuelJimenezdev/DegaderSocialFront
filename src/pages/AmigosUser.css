@@ -1,0 +1,338 @@
+/* AmigosUser.css */
+
+/* Contenedor principal con margen inferior */
+.amigos-bottom-margin {
+  height: 80px;
+  /* Espacio para separar del footer */
+}
+
+.amigos-card {
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  min-height: 80px;
+  /* Reducido para mobile */
+  cursor: pointer;
+  /* Sombra más pronunciada para mejor separación */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.08) !important;
+  border-radius: 12px !important;
+  background: #ffffff;
+}
+
+.amigos-card:hover {
+  transform: translateY(-3px);
+  /* Más elevación en hover */
+  /* Sombra más dramática en hover */
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.18), 0 4px 8px rgba(0, 0, 0, 0.12) !important;
+  border-color: rgba(102, 126, 234, 0.4) !important;
+}
+
+.clickable-card {
+  user-select: none;
+}
+
+.clickable-card:active {
+  transform: translateY(0);
+}
+
+/* Avatar responsivo */
+.amigos-avatar {
+  width: 45px;
+  height: 45px;
+  border: 2px solid #fff;
+  border-radius: 8px;
+  /* Bordes redondeados para imagen cuadrada */
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15), 0 1px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  flex-shrink: 0;
+  object-fit: cover;
+  /* Asegurar que la imagen se ajuste bien */
+}
+
+/* Avatar más grande en desktop */
+@media (min-width: 768px) {
+  .amigos-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 10px;
+    /* Bordes más redondeados para avatar más grande */
+  }
+
+  .amigos-card {
+    min-height: 100px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .amigos-avatar {
+    width: 70px;
+    height: 70px;
+    border-radius: 12px;
+    /* Bordes aún más redondeados para desktop */
+  }
+}
+
+.amigos-card:hover .amigos-avatar {
+  transform: scale(1.05);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.role-badge {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.status-indicator {
+  box-shadow: 0 0 0 2px white;
+  font-size: 0.6rem;
+  padding: 2px 4px;
+  transform: translate(25%, 25%);
+}
+
+/* Botones de contacto pequeños */
+.contact-btn-sm {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  padding: 0;
+  border-width: 1px;
+  opacity: 0.8;
+}
+
+.contact-btn-sm:hover {
+  transform: scale(1.1);
+  opacity: 1;
+}
+
+/* Acciones de contacto solo visibles en hover en desktop */
+.contact-actions {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.amigos-card:hover .contact-actions {
+  opacity: 1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  .amigos-card {
+    min-height: 70px;
+    /* Sombra ligeramente reducida en mobile para mejor performance */
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+  }
+
+  .amigos-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    /* Bordes más pequeños para mobile */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.08);
+  }
+
+  .status-indicator {
+    font-size: 0.5rem;
+    padding: 1px 3px;
+  }
+}
+
+/* Ajustes específicos para layout de 3 columnas en desktop */
+@media (min-width: 992px) {
+  .amigos-card {
+    min-height: 130px;
+  }
+
+  .amigos-avatar {
+    width: 70px !important;
+    height: 70px !important;
+  }
+
+  /* Optimizar espacio en cards más estrechas */
+  .amigos-card .card-body {
+    padding: 0.75rem !important;
+  }
+
+  .amigos-card .badge.rounded-pill {
+    font-size: 0.65rem;
+    padding: 0.3rem 0.6rem;
+  }
+
+  .contact-btn {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+.contact-btn:hover {
+  transform: scale(1.1);
+}
+
+/* Animaciones de entrada */
+.amigos-card {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive adjustments */
+/* 
+  Estructura responsive:
+  - Desktop (xl, lg): 3 amigos por fila (col-4)
+  - Tablet (md): 2 amigos por fila (col-6) 
+  - Mobile (sm): 1 amigo por fila (col-12)
+*/
+
+@media (max-width: 768px) {
+  .amigos-avatar {
+    width: 60px !important;
+    height: 60px !important;
+  }
+
+  .amigos-card {
+    margin-bottom: 1rem;
+    min-height: 100px;
+  }
+
+  /* En móvil, reducir el padding y spacing */
+  .amigos-card .card-body {
+    padding: 0.75rem !important;
+  }
+
+  .amigos-card .col-4 {
+    flex: 0 0 30% !important;
+  }
+
+  .amigos-card .col-8 {
+    flex: 0 0 70% !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .amigos-avatar {
+    width: 50px !important;
+    height: 50px !important;
+  }
+
+  .amigos-card {
+    min-height: 90px;
+  }
+
+  .contact-btn {
+    width: 28px;
+    height: 28px;
+  }
+
+  /* Badge más pequeño en móvil */
+  .badge.rounded-pill {
+    font-size: 0.6rem !important;
+    padding: 0.25rem 0.5rem !important;
+  }
+}
+
+/* Loading spinner custom */
+.loading-container {
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Empty state */
+.empty-state {
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 12px;
+  margin: 2rem 0;
+}
+
+/* Badge variants */
+.badge-director-nacional {
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+  color: #744210;
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+}
+
+.badge-director-regional {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.badge-director-municipal {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+.badge-miembro {
+  background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(107, 114, 128, 0.3);
+}
+
+/* Estilos adicionales para el diseño compacto */
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Animación suave para las cards */
+.amigos-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Efecto de elevación más pronunciado */
+  position: relative;
+}
+
+/* Pseudo-elemento para crear una sombra de fondo sutil */
+.amigos-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.9) 100%);
+  border-radius: 12px;
+  z-index: -1;
+  transition: opacity 0.3s ease;
+  opacity: 0;
+}
+
+.amigos-card:hover::before {
+  opacity: 1;
+}
+
+/* Efecto hover más sutil para mobile */
+@media (hover: hover) {
+  .amigos-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.18), 0 4px 8px rgba(0, 0, 0, 0.12);
+  }
+}
+
+/* Para dispositivos táctiles */
+@media (hover: none) {
+  .amigos-card:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+}

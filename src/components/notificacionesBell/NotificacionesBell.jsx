@@ -12,10 +12,75 @@ const NotificacionesBell = () => {
   const [mostrarLista, setMostrarLista] = useState(false);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [cargando, setCargando] = useState(true);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth); // Para detectar cambios de tamaño
   const menuRef = useRef(null);
 
   // Hooks para eventos globales
-  const { emitSolicitudRespondida, emitAmistadActualizada, emitNotificacionLeida } = useAmistadEvents();
+  const {
+    emitSolicitudRespondida,
+    emitAmistadActualizada,
+    emitNotificacionLeida,
+    onSolicitudRespondida,
+    onAmistadActualizada,
+    onNotificacionLeida
+  } = useAmistadEvents();
+
+  // Efecto para escuchar cambios de tamaño de ventana
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    const handleScroll = () => {
+      if (mostrarLista && isMobile()) {
+        setMostrarLista(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('scroll', handleScroll, true);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('scroll', handleScroll, true);
+    };
+  }, [mostrarLista, windowWidth]);
+
+  // Efecto para escuchar eventos globales de amistad y recargar notificaciones
+  useEffect(() => {
+    const handleSolicitudRespondida = (data) => {
+      console.log('🔔 Evento recibido: solicitud respondida', data);
+      // Recargar contador y notificaciones
+      cargarContador();
+      if (mostrarLista) {
+        cargarNotificaciones();
+      }
+    };
+
+    const handleAmistadActualizada = (data) => {
+      console.log('🔔 Evento recibido: amistad actualizada', data);
+      // Recargar contador
+      cargarContador();
+    };
+
+    const handleNotificacionLeida = (data) => {
+      console.log('🔔 Evento recibido: notificación leída', data);
+      // Recargar contador
+      cargarContador();
+    };
+
+    // Suscribirse a los eventos
+    const unsubscribeSolicitud = onSolicitudRespondida(handleSolicitudRespondida);
+    const unsubscribeAmistad = onAmistadActualizada(handleAmistadActualizada);
+    const unsubscribeNotificacion = onNotificacionLeida(handleNotificacionLeida);
+
+    return () => {
+      // Desuscribirse al desmontar
+      if (unsubscribeSolicitud) unsubscribeSolicitud();
+      if (unsubscribeAmistad) unsubscribeAmistad();
+      if (unsubscribeNotificacion) unsubscribeNotificacion();
+    };
+  }, [mostrarLista, onSolicitudRespondida, onAmistadActualizada, onNotificacionLeida]);
 
   const cargarContador = async () => {
     try {
@@ -62,9 +127,39 @@ const NotificacionesBell = () => {
           };
         });
 
-        setNotificaciones(notificacionesTransformadas);
-        console.log('✅ Notificaciones cargadas desde API:', notificacionesTransformadas.length);
-        console.log('🔍 DEBUGEANDO NOTIFICACIONES:', notificacionesTransformadas.map(n => ({
+        // 🔥 FILTRAR NOTIFICACIONES OBSOLETAS
+        const notificacionesValidas = [];
+
+        for (const notif of notificacionesTransformadas) {
+          if (notif.tipo === 'solicitud_amistad' && notif.remitenteId) {
+            try {
+              // Verificar estado actual de amistad
+              const estadoActual = await amistadesAPI.obtenerEstado(notif.remitenteId);
+
+              if (estadoActual.success && estadoActual.estado === 'amigos') {
+                console.log(`🗑️ Filtrando notificación obsoleta - Ya son amigos con ${notif.remitenteId}`);
+                // No agregar esta notificación porque ya son amigos
+                continue;
+              }
+
+              if (estadoActual.success && estadoActual.estado === 'ninguna') {
+                console.log(`🗑️ Filtrando notificación obsoleta - No hay relación con ${notif.remitenteId}`);
+                // No agregar esta notificación porque no hay relación
+                continue;
+              }
+            } catch (error) {
+              console.warn(`⚠️ Error verificando estado de ${notif.remitenteId}:`, error);
+              // En caso de error, mantener la notificación
+            }
+          }
+
+          // Agregar notificación válida
+          notificacionesValidas.push(notif);
+        }
+
+        setNotificaciones(notificacionesValidas);
+        console.log('✅ Notificaciones válidas cargadas:', notificacionesValidas.length);
+        console.log('🔍 DEBUGEANDO NOTIFICACIONES:', notificacionesValidas.map(n => ({
           _id: n._id,
           tipo: n.tipo,
           remitenteId: n.remitenteId,
@@ -148,6 +243,32 @@ const NotificacionesBell = () => {
         throw new Error('No se pudo obtener el ID del remitente');
       }
 
+      // 🔍 VERIFICAR ESTADO ACTUAL ANTES DE PROCEDER
+      const estadoActual = await amistadesAPI.obtenerEstado(remitenteIdFinal);
+
+      if (estadoActual.success && estadoActual.estado === 'amigos') {
+        console.log('⚠️ Los usuarios ya son amigos, removiendo notificación obsoleta');
+
+        // Remover la notificación obsoleta de la lista
+        setNotificaciones(prev => prev.filter(n => n._id !== notificacionId));
+        setNoLeidas(prev => Math.max(0, prev - 1));
+
+        // Marcar como leída en el backend
+        try {
+          await notificacionesAPI.marcarComoLeida(notificacionId);
+        } catch (markError) {
+          console.error('Error marcando notificación como leída:', markError);
+        }
+
+        // Emitir evento de que ya son amigos
+        emitAmistadActualizada({
+          usuarioId: remitenteIdFinal,
+          estado: 'amigos'
+        });
+
+        return; // No proceder con la acción
+      }
+
       // Usar la API real para responder solicitudes
       if (accion === 'aceptar') {
         await amistadesAPI.aceptarSolicitud(remitenteIdFinal);
@@ -170,17 +291,33 @@ const NotificacionesBell = () => {
 
       // 🔥 EMITIR EVENTOS GLOBALES PARA SINCRONIZAR OTROS COMPONENTES
 
-      // 1. Evento de solicitud respondida
+      // Para obtener el ID del usuario actual (quien acepta/rechaza)
+      const usuarioActualId = localStorage.getItem('userId') || localStorage.getItem('user_id');
+
+      // 1. Evento de solicitud respondida - para el remitente (quien envió)
       emitSolicitudRespondida({
         usuarioId: remitenteIdFinal,
         notificacionId: notificacionId,
         accion: accion
       });
 
-      // 2. Evento de amistad actualizada
+      // 2. Eventos de amistad actualizada - CRUZADOS para ambos usuarios
+      const nuevoEstado = accion === 'aceptar' ? 'amigos' : 'rechazada';
+
+      // CLAVE: Emitir eventos cruzados para sincronización bidireccional
+
+      // Para Persona A (remitente) - le decimos que su relación con Persona B cambió
       emitAmistadActualizada({
-        usuarioId: remitenteIdFinal,
-        estado: accion === 'aceptar' ? 'amigos' : 'rechazada'
+        usuarioId: usuarioActualId, // PersonaB - quien está siendo observado por PersonaA
+        estado: nuevoEstado,
+        relacionConUsuario: remitenteIdFinal // PersonaA - quien observa
+      });
+
+      // Para Persona B (receptor) - le decimos que su relación con Persona A cambió  
+      emitAmistadActualizada({
+        usuarioId: remitenteIdFinal, // PersonaA - quien está siendo observado por PersonaB
+        estado: nuevoEstado,
+        relacionConUsuario: usuarioActualId // PersonaB - quien observa
       });
 
       // 3. Evento de notificación leída
@@ -188,10 +325,15 @@ const NotificacionesBell = () => {
         notificacionId: notificacionId
       });
 
-      console.log(`✅ Solicitud ${accion}ada y eventos emitidos para usuario ${remitenteIdFinal}`);
+      console.log(`✅ Solicitud ${accion}ada y eventos cruzados emitidos entre usuarios ${remitenteIdFinal} ↔ ${usuarioActualId}`);
 
       // Recargar contador de notificaciones después de responder
       await cargarContador();
+
+      // Si el dropdown está abierto, recargar también las notificaciones
+      if (mostrarLista) {
+        await cargarNotificaciones();
+      }
 
     } catch (error) {
       console.error(`Error ${accion} solicitud:`, error);
@@ -248,10 +390,53 @@ const NotificacionesBell = () => {
   useEffect(() => {
     cargarContador();
 
-    // Polling cada 30 segundos para nuevas notificaciones
-    const interval = setInterval(cargarContador, 30000);
+    // Polling cada 5 segundos para nuevas notificaciones
+    const interval = setInterval(cargarContador, 5000);
     return () => clearInterval(interval);
   }, []);
+
+  // Efecto para limpiar notificaciones obsoletas periódicamente
+  useEffect(() => {
+    const limpiarNotificacionesObsoletas = async () => {
+      if (notificaciones.length === 0) return;
+
+      console.log('🧹 Limpiando notificaciones obsoletas...');
+
+      const notificacionesValidas = [];
+
+      for (const notif of notificaciones) {
+        if (notif.tipo === 'solicitud_amistad' && notif.remitenteId) {
+          try {
+            const estadoActual = await amistadesAPI.obtenerEstado(notif.remitenteId);
+
+            if (estadoActual.success && (estadoActual.estado === 'amigos' || estadoActual.estado === 'ninguna')) {
+              console.log(`🗑️ Removiendo notificación obsoleta de ${notif.remitenteId}`);
+              continue; // No agregar esta notificación
+            }
+          } catch (error) {
+            console.warn(`⚠️ Error verificando estado de ${notif.remitenteId}:`, error);
+          }
+        }
+
+        notificacionesValidas.push(notif);
+      }
+
+      if (notificacionesValidas.length !== notificaciones.length) {
+        setNotificaciones(notificacionesValidas);
+        setNoLeidas(prev => Math.max(0, prev - (notificaciones.length - notificacionesValidas.length)));
+        console.log(`✅ Removidas ${notificaciones.length - notificacionesValidas.length} notificaciones obsoletas`);
+      }
+    };
+
+    // Ejecutar limpieza inicial después de 2 segundos y luego cada 30 segundos
+    const timeoutInicial = setTimeout(limpiarNotificacionesObsoletas, 2000);
+    const interval = setInterval(limpiarNotificacionesObsoletas, 30000);
+
+    return () => {
+      clearTimeout(timeoutInicial);
+      clearInterval(interval);
+    };
+  }, [notificaciones]);
 
   const toggleLista = async () => {
     console.log('Toggle lista clicked, estado actual:', mostrarLista);
@@ -261,6 +446,42 @@ const NotificacionesBell = () => {
     }
     setMostrarLista(!mostrarLista);
     console.log('Nuevo estado:', !mostrarLista);
+  };
+
+  // Función para determinar si estamos en móvil
+  const isMobile = () => {
+    return windowWidth <= 768;
+  };
+
+  // Estilo dinámico para el dropdown
+  const getDropdownStyle = () => {
+    if (isMobile()) {
+      // En móvil: usar position fixed para centrarlo en la pantalla
+      return {
+        position: 'fixed',
+        top: '70px', // Justo debajo del navbar
+        left: '50%',
+        transform: 'translateX(-50%)', // Centrar horizontalmente
+        width: '95vw',
+        maxWidth: '400px',
+        maxHeight: 'calc(100vh - 120px)',
+        overflowY: 'auto',
+        zIndex: 10000
+      };
+    } else {
+      // En desktop: posición absoluta relativa al botón
+      return {
+        position: 'absolute',
+        top: '100%',
+        marginTop: '8px',
+        width: '380px',
+        right: 0,
+        left: 'auto',
+        maxHeight: '500px',
+        overflowY: 'auto',
+        zIndex: 10000
+      };
+    }
   };
 
   return (
@@ -280,16 +501,9 @@ const NotificacionesBell = () => {
 
       {mostrarLista && (
         <div
-          className="position-absolute bg-white border rounded shadow-lg notification-dropdown"
-          style={{
-            right: 0,
-            top: '100%',
-            width: '380px',
-            maxHeight: '500px',
-            overflowY: 'auto',
-            zIndex: 1060,
-            marginTop: '8px'
-          }}
+          className={`bg-white border rounded shadow-lg notification-dropdown ${isMobile() ? '' : 'position-absolute'}`}
+          style={getDropdownStyle()}
+          ref={menuRef}
         >
           <div className="p-3 border-bottom d-flex justify-content-between align-items-center">
             <h6 className="m-0 fw-bold">Notificaciones</h6>
