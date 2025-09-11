@@ -5,6 +5,7 @@ import SolicitudAmistad from './SolicitudAmistad';
 import ModalNotificaciones from './ModalNotificaciones';
 import { notificacionesAPI, amistadesAPI } from '../../lib/apiNotificaciones';
 import { useAmistadEvents } from '../../hooks/useGlobalEvents';
+import { useNavigate } from 'react-router-dom';
 
 const NotificacionesBell = () => {
   const [notificaciones, setNotificaciones] = useState([]);
@@ -14,6 +15,7 @@ const NotificacionesBell = () => {
   const [cargando, setCargando] = useState(true);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth); // Para detectar cambios de tamaño
   const menuRef = useRef(null);
+  const navigate = useNavigate();
 
   // Hooks para eventos globales
   const {
@@ -84,12 +86,18 @@ const NotificacionesBell = () => {
 
   const cargarContador = async () => {
     try {
-      const data = await notificacionesAPI.obtenerContador();
-      setNoLeidas(data.count || 0);
+      // Traer solo no leídas y sumar cantidades reales
+      const data = await notificacionesAPI.obtenerNotificaciones({ soloNoLeidas: true, limit: 50 });
+      if (data?.success && Array.isArray(data.data)) {
+        // Excluir mensajes del contador de la campanita (lo llevará ChatBell)
+        const total = data.data.reduce((acc, n) => n.tipo === 'mensaje' ? acc : acc + 1, 0);
+        setNoLeidas(total);
+      } else {
+        setNoLeidas(0);
+      }
     } catch (error) {
       console.error('Error cargando contador:', error);
-      // En caso de error, usar datos de prueba
-      setNoLeidas(3);
+      setNoLeidas(0);
     }
   };
 
@@ -218,7 +226,10 @@ const NotificacionesBell = () => {
       setNotificaciones(prev => prev.map(n =>
         n._id === notificacionId ? { ...n, leida: true } : n
       ));
-      setNoLeidas(prev => Math.max(0, prev - 1));
+      // Restar por cantidad real (para mensajes agrupados)
+      const notif = notificaciones.find(n => n._id === notificacionId);
+      const resta = notif?.tipo === 'mensaje' ? ((notif?.datos?.count || 1)) : 1;
+      setNoLeidas(prev => Math.max(0, prev - resta));
     } catch (error) {
       console.error('Error marcando como leída:', error);
     }
@@ -544,7 +555,16 @@ const NotificacionesBell = () => {
                   key={notificacion._id}
                   className={`p-3 border-bottom notification-item ${!notificacion.leida ? 'notification-unread' : ''}`}
                   style={{ cursor: 'pointer' }}
-                  onClick={() => !notificacion.leida && marcarComoLeida(notificacion._id)}
+                  onClick={async () => {
+                    // Navegar a chat si es notificación de mensaje
+                    if (notificacion.tipo === 'mensaje' && notificacion.remitenteId) {
+                      navigate('/mensajes', { state: { usuarioSeleccionado: { _id: notificacion.remitenteId, primernombreUsuario: notificacion?.remitente?.primernombreUsuario, primerapellidoUsuario: notificacion?.remitente?.primerapellidoUsuario, fotoPerfil: notificacion?.remitente?.fotoPerfil } } });
+                    }
+                    if (!notificacion.leida) {
+                      await marcarComoLeida(notificacion._id);
+                    }
+                    setMostrarLista(false);
+                  }}
                 >
                   <div className="d-flex">
                     <div className="me-3">
@@ -560,14 +580,19 @@ const NotificacionesBell = () => {
                             {formatearTiempo(notificacion.createdAt)}
                           </small>
                         </div>
-                        {!notificacion.leida && (
-                          <div className="ms-2">
+                        <div className="ms-2 d-flex align-items-center">
+                          {notificacion?.datos?.count > 1 && (
+                            <span className="badge bg-primary rounded-pill" style={{ fontSize: '11px' }}>
+                              {notificacion.datos.count}
+                            </span>
+                          )}
+                          {!notificacion.leida && (
                             <div
-                              className="bg-primary rounded-circle notification-badge"
+                              className="bg-primary rounded-circle notification-badge ms-2"
                               style={{ width: '8px', height: '8px' }}
                             ></div>
-                          </div>
-                        )}
+                          )}
+                        </div>
                       </div>
 
                       {/* Botones para solicitudes de amistad */}

@@ -26,6 +26,7 @@
 16. [Roadmap](#roadmap)
 17. [Contribuir](#contribuir)
 18. [Licencia](#licencia)
+19. [Documentación adicional](#documentación-adicional)
 
 ---
 
@@ -404,6 +405,24 @@ npm run preview
 Proyecto **privado** de la Fundación Humanitaria Sol & Luna.
 
 > **Licencia:** Todos los derechos reservados © 2025 Degader Social. Uso interno. Prohibida su reproducción, distribución o modificación sin autorización expresa por escrito.
+
+---
+
+## Documentación adicional
+
+Todos los README y guías específicas se agruparon en la carpeta `docs/`. Índice rápido:
+
+- `docs/README.md` (índice de documentación)
+- `BACKEND_SETUP.md` (configuración del backend local)
+- `MODO_DE_USO.md` (modo de uso general)
+- `NOTIFICACIONES_README.md` (detalle del sistema de notificaciones)
+- `DOCUMENTACION-REACCIONES.md` (reacciones en publicaciones)
+- `DOCUMENTACION-COMENTARIOS-MULTIMEDIA.md` (comentarios con multimedia)
+- `PRUEBAS-COMENTARIOS-FRONTEND.md` (guía de pruebas de comentarios en frontend)
+- `PRUEBAS-FINALES-REACCIONES.md` (pruebas finales de reacciones)
+- `GUIA-PRUEBAS-COMENTARIOS-MULTIMEDIA.md` (guía de QA para multimedia)
+- `SINCRONIZACION_ESTADOS.md` (sincronización de estados)
+- `RESUMEN-IMPLEMENTACION-COMPLETADA.md` (resumen de implementaciones)
 
 ---
 

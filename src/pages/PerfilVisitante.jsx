@@ -72,7 +72,22 @@ function PerfilVisitante() {
   }, [id]);
 
   const handleSendMessage = () => {
-    navigate(`/mensajes/${id}`);
+    // Navegar a la página de mensajes con el usuario seleccionado (ruta real /messages)
+    if (usuario) {
+      navigate('/messages', {
+        state: {
+          usuarioSeleccionado: {
+            _id: usuario._id || id,
+            primernombreUsuario: usuario.primernombreUsuario,
+            primerapellidoUsuario: usuario.primerapellidoUsuario,
+            fotoPerfil: usuario.fotoPerfil,
+            estadoUsuario: usuario.estadoUsuario || 'activo'
+          }
+        }
+      });
+    } else {
+      navigate('/messages');
+    }
   };
 
   // Verificar si el usuario está viendo su propio perfil

@@ -1,12 +1,13 @@
 // src/components/Layout/Navbar.jsx
 import React from "react";
-import { Search, Bell, Users, Calendar, MessageCircle } from "lucide-react";
+import { Search, Bell, Users, Calendar } from "lucide-react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import UserMenu from "../userMenu/UserMenu";
 import { useProfile } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import SearchBar from "../searchBar/SearchBar";
 import NotificacionesBell from "../notificacionesBell/NotificacionesBell";
+import ChatBell from "../notificacionesBell/ChatBell";
 
 export function Navbar() {
   const { profile, loading, clearProfile } = useProfile();
@@ -62,17 +63,11 @@ export function Navbar() {
               <Calendar size={20} className="text-secondary" />
             </button>
 
-            {/* Componente de notificaciones */}
+            {/* Notificaciones generales (sin mensajes) */}
             <NotificacionesBell />
 
-            {/* Mensajes - Visible en todos los tamaños */}
-            <button
-              className="btn btn-light p-2 rounded-circle"
-              onClick={() => navigate('/messages')}
-              title="Mensajes"
-            >
-              <MessageCircle size={20} className="text-secondary" />
-            </button>
+            {/* Mensajes (contador y dropdown) */}
+            <ChatBell />
 
             {/* User menu */}
             <UserMenu

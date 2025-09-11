@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { User, ArrowLeft, MapPin, Mail, Phone } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { navegarAlChat } from '../services/mensajes.service';
 
 const PerfilInvitado = () => {
   const { userId } = useParams();
@@ -28,9 +29,14 @@ const PerfilInvitado = () => {
     return () => clearTimeout(timer);
   }, [userId]);
 
-  const volver = () => {
-    console.log('⬅️ Regresando a la página anterior');
-    navigate(-1); // Volver a la página anterior
+  const enviarMensaje = () => {
+    console.log('💬 Navegando al chat con usuario:', userId);
+    // Usar la función utilitaria para navegar al chat
+    navegarAlChat(navigate, {
+      _id: userId,
+      primernombreUsuario: usuario.primernombreUsuario,
+      primerapellidoUsuario: usuario.primerapellidoUsuario
+    });
   };
 
   if (loading) {
@@ -109,7 +115,10 @@ const PerfilInvitado = () => {
                       <h6 className="mb-0">🔧 Acciones de prueba</h6>
                     </div>
                     <div className="card-body">
-                      <button className="btn btn-outline-primary btn-sm me-2 mb-2">
+                      <button
+                        className="btn btn-outline-primary btn-sm me-2 mb-2"
+                        onClick={enviarMensaje}
+                      >
                         <Mail size={14} className="me-1" />
                         Enviar mensaje
                       </button>

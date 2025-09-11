@@ -102,6 +102,21 @@ export const notificacionesAPI = {
   }
 };
 
+// Helper para crear notificaciones (uso interno)
+export const crearNotificacion = async ({ destinatarioId, remitenteId, tipo, mensaje, datos, enlace, prioridad }) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/notificaciones`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ destinatarioId, remitenteId, tipo, mensaje, datos, enlace, prioridad })
+    });
+    return await handleResponse(response);
+  } catch (error) {
+    console.error('Error creando notificación:', error);
+    throw error;
+  }
+};
+
 // === API DE AMISTADES ===
 
 export const amistadesAPI = {
